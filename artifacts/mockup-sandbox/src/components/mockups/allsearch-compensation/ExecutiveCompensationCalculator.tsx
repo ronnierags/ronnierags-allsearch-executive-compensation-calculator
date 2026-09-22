@@ -130,10 +130,11 @@ export function ExecutiveCompensationCalculator() {
           <span className="flex gap-3 text-[#586574]">Share&nbsp;&nbsp; Sign in</span>
         </div>
         <div className="flex h-[53px] items-center justify-between px-7">
-          <div className="flex items-center gap-2">
-            <div className="relative text-[22px] font-bold tracking-[-.15em] text-[#17365d]">A<span className="relative -left-1 top-1">S</span><span className="absolute -bottom-1 left-0 w-12 border-b border-[#c3a34c]" /></div>
-            <div className="mt-4 text-[6px] font-semibold tracking-[.16em] text-[#17365d]">ALLSEARCH EXECUTIVE</div>
-          </div>
+          <img
+            src="/__mockup/images/allsearch-executive-logo.png"
+            alt="AllSearch Executive"
+            className="h-11 w-auto object-contain"
+          />
           <div className="text-right">
             <div className="text-[11px] font-bold text-[#132c4f]">Executive Compensation Calculator</div>
             <div className="text-[8px] text-[#85909d]">AllSearch Executive • Public • Private • PE-backed</div>
