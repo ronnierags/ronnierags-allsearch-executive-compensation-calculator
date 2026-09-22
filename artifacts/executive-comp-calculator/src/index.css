@@ -14,11 +14,159 @@
 main > div:first-child label > input {
   background: #fffefb;
   border: 1px solid #d8dee5;
-  border-radius: 4px;
+  border-radius: 7px;
+  min-height: 32px;
+  padding-inline: 10px;
+  transition: border-color .16s ease, box-shadow .16s ease;
 }
 
 main > div:first-child label > input:focus {
   border-color: #c3a34c;
   box-shadow: 0 0 0 1px #c3a34c;
   outline: none;
+}
+
+/* Executive calculator control system: one calm, legible language across every
+   editable surface, including the dense year-by-year modeling grids. */
+main aside input,
+main aside select,
+main aside textarea {
+  min-height: 32px;
+  border: 1px solid #cfd8e1;
+  border-radius: 7px;
+  background: #fffefb;
+  color: #1c2d45;
+  box-shadow: inset 0 1px 1px rgba(20,46,85,.025);
+  transition: border-color .16s ease, box-shadow .16s ease, background-color .16s ease;
+}
+main aside input:hover,
+main aside select:hover {
+  border-color: #aebdca;
+  background: #fffefa;
+}
+main aside input:focus,
+main aside select:focus,
+main aside textarea:focus {
+  border-color: #b49743;
+  box-shadow: 0 0 0 3px rgba(195,163,76,.16);
+  outline: none;
+}
+main aside input[type="number"] {
+  padding-inline: 9px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+main aside input[type="text"],
+main aside select {
+  padding-inline: 9px;
+}
+main aside input[type="checkbox"] {
+  min-height: 16px;
+  width: 16px;
+  border-radius: 4px;
+  accent-color: #b49743;
+  box-shadow: none;
+}
+main aside .model-grid {
+  scrollbar-color: #bcc8d2 #f1f3f1;
+  scrollbar-width: thin;
+}
+main aside .model-grid::-webkit-scrollbar { height: 8px; }
+main aside .model-grid::-webkit-scrollbar-track { background: #f1f3f1; border-radius: 99px; }
+main aside .model-grid::-webkit-scrollbar-thumb { background: #bcc8d2; border-radius: 99px; }
+main aside .model-grid input {
+  width: 72px;
+  min-height: 30px;
+  border-radius: 6px;
+}
+main aside .metric-row input:first-child { text-align: left; }
+main aside .metric-row input { min-width: 0; }
+main aside .milestone-row input { min-width: 0; }
+/* Milestones are deliberately stacked: the narrative name gets the full
+   sidebar width, while the execution fields share a clean second line. */
+main aside > div:has(button[data-testid="toggle-Milestone / incentive bonuses"]) .milestone-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 58px 72px;
+  gap: 6px;
+  margin: 7px 0;
+  padding: 7px;
+  border: 1px solid #e1e6ea;
+  border-radius: 8px;
+  background: #fafbf9;
+}
+main aside > div:has(button[data-testid="toggle-Milestone / incentive bonuses"]) .milestone-card input:first-child {
+  grid-column: 1 / -1;
+  width: 100%;
+  text-align: left;
+}
+main aside > div:has(button[data-testid="toggle-Milestone / incentive bonuses"]) .milestone-card input:nth-child(n+2) {
+  width: 100%;
+  min-width: 0;
+  font-size: 9px;
+}
+main aside > div:has(button[data-testid="toggle-Milestone / incentive bonuses"]) .milestone-card input:nth-child(2) { grid-column: 1; }
+main aside > div:has(button[data-testid="toggle-Milestone / incentive bonuses"]) .milestone-card input:nth-child(3) { grid-column: 2; }
+main aside > div:has(button[data-testid="toggle-Milestone / incentive bonuses"]) .milestone-card input:nth-child(4) { grid-column: 3; }
+
+/* A true year matrix, rather than a wrapped form: the first column remains
+   readable while 3–10 calendar years travel beneath one shared header. */
+main aside .year-matrix {
+  display: block !important;
+  overflow-x: auto;
+  max-width: 100%;
+  padding: 8px;
+  border: 1px solid #e1e6ea;
+  border-radius: 8px;
+  background: #fafbf9;
+  scrollbar-color: #b9c6d0 #eef1f0;
+  scrollbar-width: thin;
+}
+main aside .year-matrix::-webkit-scrollbar { height: 7px; }
+main aside .year-matrix::-webkit-scrollbar-track { background: #eef1f0; border-radius: 99px; }
+main aside .year-matrix::-webkit-scrollbar-thumb { background: #b9c6d0; border-radius: 99px; }
+main aside .year-matrix-header,
+main aside .year-matrix-row {
+  display: grid;
+  grid-template-columns: 92px repeat(10, 72px);
+  gap: 8px;
+  min-width: max-content;
+  align-items: center;
+}
+main aside .year-matrix-header {
+  padding: 0 0 6px;
+  border-bottom: 1px solid #dfe5e9;
+  color: #647487;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  text-align: right;
+}
+main aside .year-matrix-header span:first-child,
+main aside .year-matrix-row > :first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: #fafbf9;
+  text-align: left;
+}
+main aside .year-matrix-row {
+  padding: 4px 0;
+  font-size: 8px;
+  color: #526072;
+}
+main aside .year-matrix-row input {
+  width: 72px;
+  min-height: 30px;
+  text-align: right;
+}
+main aside .score-matrix {
+  margin-top: 10px;
+  overflow-x: auto;
+  padding-top: 8px;
+  border-top: 1px solid #e5e9ec;
+}
+@media (max-width: 640px) {
+  main aside input,
+  main aside select { min-height: 34px; }
 }
