@@ -1,4 +1,4 @@
-import { useMemo, useState, type ReactNode } from "react";
+import { useMemo, useState, type FormEvent, type ReactNode } from "react";
 import {
   ChevronDown,
   ChevronRight,
@@ -8,6 +8,10 @@ import {
   Info,
   BarChart3,
   ShieldCheck,
+  X,
+  Mail,
+  Download,
+  CheckCircle2,
 } from "lucide-react";
 import {
   Area,
@@ -102,6 +106,10 @@ export function ExecutiveCompensationCalculator() {
   const [maximum, setMaximum] = useState("1.5");
   const [metrics, setMetrics] = useState(seedMetrics);
   const [open, setOpen] = useState<Record<SectionKey, boolean>>({ base: true, incentive: true, equity: false, floor: false, severance: false });
+  const [leadOpen, setLeadOpen] = useState(false);
+  const [leadSent, setLeadSent] = useState(false);
+  const [lead, setLead] = useState({ name: "", email: "", company: "", role: "" });
+  const [leadError, setLeadError] = useState("");
 
   const baseNumber = Number(base) || 0;
   const targetNumber = Number(target) || 0;
@@ -119,6 +127,19 @@ export function ExecutiveCompensationCalculator() {
   const reset = () => {
     setCompany("Private"); setCandidate(""); setYear("2026"); setYears("7"); setReference("0");
     setBase("0"); setIncrease("3"); setTarget("60"); setMaximum("1.5"); setMetrics(seedMetrics);
+  };
+  const submitLead = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!lead.name || !lead.email || !lead.company || !lead.role) {
+      setLeadError("Please complete every field to receive your plan.");
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(lead.email)) {
+      setLeadError("Please enter a valid email address.");
+      return;
+    }
+    setLeadError("");
+    setLeadSent(true);
   };
 
   return (
@@ -191,10 +212,28 @@ export function ExecutiveCompensationCalculator() {
               <ChartCard title="Cash vs. long-term" icon={<ShieldCheck size={12} />}><ResponsiveContainer width="100%" height="100%"><AreaChart data={chartData} margin={{ left: 0, right: 10, top: 8, bottom: 0 }}><CartesianGrid stroke="#e6e9e8" vertical={false} /><XAxis dataKey="year" tick={{ fontSize: 8, fill: "#75808a" }} /><YAxis tick={{ fontSize: 8, fill: "#75808a" }} tickFormatter={(v) => `$${v / 1000}k`} /><Tooltip formatter={(v: number) => money(v)} /><Legend wrapperStyle={{ fontSize: 8 }} /><Area type="monotone" dataKey="cash" name="Cash" stackId="1" fill="#8ea9c5" stroke="#6d8daa" /><Area type="monotone" dataKey="equity" name="Long-term" stackId="1" fill="#ddc989" stroke="#b69c4d" /></AreaChart></ResponsiveContainer></ChartCard>
             </div>
             <div className="mt-3"><ChartCard title="Phantom equity build (vested year)" icon={<Info size={12} />} tall><ResponsiveContainer width="100%" height="100%"><LineChart data={chartData} margin={{ left: 0, right: 12, top: 10, bottom: 0 }}><CartesianGrid stroke="#e6e9e8" vertical={false} /><XAxis dataKey="year" tick={{ fontSize: 8, fill: "#75808a" }} /><YAxis tick={{ fontSize: 8, fill: "#75808a" }} tickFormatter={(v) => `$${v / 1000}k`} /><Tooltip formatter={(v: number) => money(v)} /><Legend wrapperStyle={{ fontSize: 8 }} /><Line type="monotone" dataKey="equity" name="Phantom equity value" stroke="#8676a8" strokeWidth={2} dot={{ r: 2, fill: "#8676a8" }} /><Line type="monotone" dataKey="cash" name="EV growth" stroke="#253b55" strokeDasharray="4 3" strokeWidth={1.5} dot={false} /></LineChart></ResponsiveContainer></ChartCard></div>
-            <div className="mt-3 rounded-md border border-[#dfe4e7] bg-[#fffefb] p-3 text-[9px] text-[#667383]"><span className="font-semibold text-[#2d4666]">Model notes.</span> Values are illustrative and should be reviewed with the board, compensation committee, and tax counsel. Adjust assumptions in the left panel to pressure-test the offer across a {yearsNumber}-year horizon.</div>
+            <div className="mt-3 flex flex-col gap-3 rounded-md border border-[#dfe4e7] bg-[#fffefb] p-3 text-[9px] text-[#667383] sm:flex-row sm:items-center sm:justify-between">
+              <div><span className="font-semibold text-[#2d4666]">Model notes.</span> Values are illustrative and should be reviewed with the board, compensation committee, and tax counsel. Adjust assumptions in the left panel to pressure-test the offer across a {yearsNumber}-year horizon.</div>
+              <button onClick={() => { setLeadOpen(true); setLeadSent(false); setLeadError(""); }} className="flex shrink-0 items-center justify-center gap-1.5 rounded bg-[#c3a34c] px-3 py-2 text-[9px] font-semibold text-[#172c4a] shadow-sm transition hover:bg-[#d2b65e]"><Mail size={12} /> Email me my comp plan (PDF)</button>
+            </div>
           </div>
         </div>
       </main>
+      {leadOpen && <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0d2342]/55 p-4" role="dialog" aria-modal="true" aria-labelledby="lead-title">
+        <div className="relative w-full max-w-[430px] rounded-lg border border-[#dce2e8] bg-[#fffefb] p-5 shadow-2xl">
+          <button aria-label="Close" onClick={() => setLeadOpen(false)} className="absolute right-4 top-4 text-[#738092] hover:text-[#142e55]"><X size={16} /></button>
+          {!leadSent ? <form onSubmit={submitLead}>
+            <div className="mb-4 pr-6"><div className="text-[9px] font-semibold uppercase tracking-[.12em] text-[#b0913f]">AllSearch Executive</div><h2 id="lead-title" className="mt-1 text-[18px] font-semibold text-[#142e55]">Get your compensation plan</h2><p className="mt-1 text-[10px] leading-4 text-[#687789]">We’ll turn this scenario into a branded PDF with the year-by-year view and key assumptions.</p></div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {([["name", "Name", "Alex Morgan"], ["email", "Email", "alex@company.com"], ["company", "Company", "Company name"], ["role", "Role / Position", "Chief Executive Officer"]] as const).map(([key, label, placeholder]) => <label key={key} className="text-[9px] font-semibold text-[#40536b]">{label}<input type={key === "email" ? "email" : "text"} value={lead[key]} onChange={(event) => setLead((current) => ({ ...current, [key]: event.target.value }))} placeholder={placeholder} className="mt-1 h-9 w-full rounded border border-[#d9e0e7] bg-white px-2.5 text-[11px] font-normal text-[#1c2d45] outline-none placeholder:text-[#9aa4af] focus:border-[#c3a34c] focus:ring-2 focus:ring-[#c3a34c]/20" /></label>)}
+            </div>
+            <label className="mt-4 flex items-start gap-2 text-[9px] leading-4 text-[#687789]"><input required type="checkbox" className="mt-0.5 accent-[#c3a34c]" /> <span>We’ll send your comp plan and may follow up about your search.</span></label>
+            {leadError && <div className="mt-3 rounded border border-[#e4bcbc] bg-[#fff4f2] px-2.5 py-2 text-[9px] text-[#a14848]">{leadError}</div>}
+            <button type="submit" className="mt-5 flex h-9 w-full items-center justify-center gap-2 rounded bg-[#142e55] text-[10px] font-semibold text-white hover:bg-[#1d3c6c]"><Mail size={13} /> Send my plan</button>
+            <p className="mt-2 text-center text-[8px] text-[#9aa4af]">Your scenario stays private and is only used to prepare this plan.</p>
+          </form> : <div className="py-5 text-center"><div className="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-[#e7f0e4] text-[#4d7c4b]"><CheckCircle2 size={23} /></div><h2 className="mt-3 text-[18px] font-semibold text-[#142e55]">Your plan is ready</h2><p className="mx-auto mt-1 max-w-[280px] text-[10px] leading-4 text-[#687789]">We’ve captured the scenario and prepared your year-by-year compensation summary.</p><button onClick={() => setLeadOpen(false)} className="mt-5 inline-flex items-center gap-2 rounded bg-[#c3a34c] px-4 py-2 text-[10px] font-semibold text-[#172c4a]"><Download size={13} /> Download PDF</button><button onClick={() => setLeadOpen(false)} className="ml-2 rounded px-3 py-2 text-[10px] font-semibold text-[#51647c]">Close</button></div>}
+        </div>
+      </div>}
     </div>
   );
 }
