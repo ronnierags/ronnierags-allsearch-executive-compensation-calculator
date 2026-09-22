@@ -10,6 +10,10 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: leads
+    description: Compensation-plan lead capture
+  - name: admin
+    description: Protected lead administration
 paths:
   /healthz:
     get:
@@ -24,6 +28,59 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /leads:
+    post:
+      operationId: createLead
+      tags: [leads]
+      summary: Capture a lead and prepare their compensation plan
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LeadInput"
+      responses:
+        "201":
+          description: Lead captured
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LeadReceipt"
+        "400":
+          description: Invalid lead
+  /admin/leads:
+    get:
+      operationId: listLeads
+      tags: [admin]
+      summary: List captured leads for the authorized administrator
+      responses:
+        "200":
+          description: Captured leads
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Lead"
+        "401":
+          description: Authentication required
+        "403":
+          description: Administrator access required
+  /admin/leads.csv:
+    get:
+      operationId: exportLeadsCsv
+      tags: [admin]
+      summary: Export captured leads as CSV
+      responses:
+        "200":
+          description: CSV export
+          content:
+            text/csv:
+              schema: { type: string }
+        "401":
+          description: Authentication required
+        "403":
+          description: Administrator access required
 components:
   schemas:
     HealthStatus:
@@ -33,4 +90,75 @@ components:
           type: string
       required:
         - status
+    ScenarioInput:
+      type: object
+      additionalProperties: false
+      properties:
+        companyType: { type: string, enum: [Public, Private, PE-backed] }
+        candidateRole: { type: string }
+        year: { type: integer }
+        yearsToModel: { type: integer, minimum: 1, maximum: 15 }
+        marketReference: { type: number, minimum: 0 }
+        baseSalary: { type: number, minimum: 0 }
+        annualIncreasePercent: { type: number, minimum: 0, maximum: 100 }
+        targetIncentivePercent: { type: number, minimum: 0, maximum: 1000 }
+        maximumMultiple: { type: number, minimum: 0 }
+        metrics:
+          type: array
+          items:
+            $ref: "#/components/schemas/ScorecardMetric"
+        yearlyCompensation:
+          type: array
+          items:
+            $ref: "#/components/schemas/YearlyCompensation"
+      required: [companyType, candidateRole, year, yearsToModel, marketReference, baseSalary, annualIncreasePercent, targetIncentivePercent, maximumMultiple, metrics, yearlyCompensation]
+    ScorecardMetric:
+      type: object
+      additionalProperties: false
+      properties:
+        name: { type: string }
+        weight: { type: number }
+      required: [name, weight]
+    YearlyCompensation:
+      type: object
+      additionalProperties: false
+      properties:
+        year: { type: string }
+        base: { type: number }
+        incentive: { type: number }
+        cash: { type: number }
+        equity: { type: number }
+      required: [year, base, incentive, cash, equity]
+    LeadInput:
+      type: object
+      additionalProperties: false
+      properties:
+        name: { type: string, minLength: 1, maxLength: 200 }
+        email: { type: string, format: email, maxLength: 320 }
+        company: { type: string, minLength: 1, maxLength: 200 }
+        role: { type: string, minLength: 1, maxLength: 200 }
+        consent: { type: boolean, const: true }
+        scenario:
+          $ref: "#/components/schemas/ScenarioInput"
+      required: [name, email, company, role, consent, scenario]
+    LeadReceipt:
+      type: object
+      properties:
+        id: { type: integer }
+        pdfBase64: { type: string }
+        fileName: { type: string }
+        emailSent: { type: boolean }
+      required: [id, pdfBase64, fileName, emailSent]
+    Lead:
+      type: object
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        email: { type: string }
+        company: { type: string }
+        role: { type: string }
+        createdAt: { type: string, format: date-time }
+        scenario:
+          $ref: "#/components/schemas/ScenarioInput"
+      required: [id, name, email, company, role, createdAt, scenario]
 

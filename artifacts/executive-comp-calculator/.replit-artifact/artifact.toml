@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "AllSearch Executive Compensation Calculator"
+description = "A production executive compensation modeling app with lead capture, branded PDF downloads, email notifications, and a protected lead administration area."
+version = "1.0.0"
+id = "artifacts/executive-comp-calculator"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 22712
+
+[services.development]
+run = "pnpm --filter @workspace/executive-comp-calculator run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/executive-comp-calculator", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/executive-comp-calculator/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22712"
+BASE_PATH = "/"

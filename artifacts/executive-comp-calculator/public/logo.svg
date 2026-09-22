@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 150">
+  <rect width="520" height="150" fill="#fffefb"/>
+  <path d="M55 95 85 25l35 70M68 65l42 18M100 27h55M108 55h45M116 83h38" fill="none" stroke="#142e55" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="205" y="67" fill="#142e55" font-family="DM Sans, sans-serif" font-size="21" letter-spacing="7">ALLSEARCH</text>
+  <text x="205" y="95" fill="#142e55" font-family="DM Sans, sans-serif" font-size="21" letter-spacing="5">EXECUTIVE</text>
+  <path d="M55 122h410" stroke="#142e55" stroke-width="2"/>
+</svg>

@@ -18,3 +18,13 @@ expertMode = true
 [postMerge]
 path = "scripts/post-merge.sh"
 timeoutMs = 20000
+
+[userenv]
+
+[userenv.shared]
+ADMIN_EMAIL = "rragusa@allsearchinc.com"
+EMAIL_FROM = "rragusa@allsearchinc.com"
+LEAD_NOTIFICATION_EMAIL = "rragusa@allsearchinc.com"
+
+[nix]
+channel = "stable-25_05"
