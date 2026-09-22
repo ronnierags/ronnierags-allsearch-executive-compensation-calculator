@@ -27,25 +27,37 @@ export function createCompensationPdf(input: {
     yearsToModel: number;
     marketReference: number;
     baseSalary: number;
+      yearOneProRataPercent: number;
     annualIncreasePercent: number;
     targetIncentivePercent: number;
     maximumMultiple: number;
-    metrics: Array<{ name: string; weight: number }>;
+      annualEquityGrant: number;
+      equityVestingYears: number;
+      equityValueFactorPercent: number;
+      minimumAnnualCashGuarantee: number;
+      guaranteeDurationMonths: number;
+      severanceMonths: number;
+      changeInControlMultiple: number;
+      metrics: Array<{ name: string; weight: number; achievement: number }>;
     yearlyCompensation: Array<{
       year: string;
       base: number;
       incentive: number;
       cash: number;
       equity: number;
+      guaranteeTopUp: number;
+      totalComp: number;
     }>;
   };
 }): Buffer {
   const scenario = input.scenario;
   const yearOne = scenario.yearlyCompensation[0];
-  const totalYearOne = (yearOne?.base ?? 0) + (yearOne?.incentive ?? 0);
+  const totalYearOne = yearOne?.totalComp ?? ((yearOne?.base ?? 0) + (yearOne?.incentive ?? 0) + (yearOne?.equity ?? 0));
   const cumulative = scenario.yearlyCompensation
     .slice(0, scenario.yearsToModel)
-    .reduce((sum, row) => sum + row.cash + row.equity, 0);
+    .reduce((sum, row) => sum + row.totalComp, 0);
+  const finalSalary = scenario.yearlyCompensation.at(-1)?.base ?? 0;
+  const contingent = Math.max(finalSalary * scenario.severanceMonths / 12, finalSalary * scenario.changeInControlMultiple);
   const commands: string[] = [
     "0.078 0.18 0.333 rg 0 690 612 102 re f",
     "0.765 0.639 0.298 rg 0 680 612 10 re f",
@@ -63,6 +75,9 @@ export function createCompensationPdf(input: {
     textLine(`Target incentive: ${scenario.targetIncentivePercent}%`, 310, 515, 9),
     textLine(`Annual increase: ${scenario.annualIncreasePercent}%`, 58, 496, 9),
     textLine(`Maximum incentive multiple: ${scenario.maximumMultiple}x`, 310, 496, 9),
+    textLine(`Year-1 pro-rata: ${scenario.yearOneProRataPercent}% | Equity grant: ${money(scenario.annualEquityGrant)} @ ${scenario.equityValueFactorPercent}%`, 58, 458, 8),
+    textLine(`Guarantee: ${money(scenario.minimumAnnualCashGuarantee)} for ${scenario.guaranteeDurationMonths} months`, 310, 458, 8),
+    textLine(`Contingent protections: ${money(contingent)} (not earned pay)`, 58, 442, 8),
     textLine(`Market reference: ${money(scenario.marketReference)}`, 58, 477, 9),
     textLine(`Candidate / role entered: ${scenario.candidateRole || "Not specified"}`, 310, 477, 9),
     textLine("YEAR-BY-YEAR COMPENSATION", 48, 438, 10, true),
@@ -71,7 +86,7 @@ export function createCompensationPdf(input: {
     textLine("Base", 126, 407, 8, true),
     textLine("Incentive", 230, 407, 8, true),
     textLine("Cash", 344, 407, 8, true),
-    textLine("Long-term", 450, 407, 8, true),
+    textLine("Equity", 450, 407, 8, true),
   ];
   scenario.yearlyCompensation.slice(0, 10).forEach((row, index) => {
     const y = 386 - index * 19;
@@ -81,6 +96,7 @@ export function createCompensationPdf(input: {
       textLine(money(row.incentive), 230, y, 8),
       textLine(money(row.cash), 344, y, 8),
       textLine(money(row.equity), 450, y, 8),
+      textLine(`Top-up ${money(row.guaranteeTopUp)} | Total ${money(row.totalComp)}`, 450, y - 10, 6),
     );
   });
   const metricsY = Math.max(155, 370 - Math.min(10, scenario.yearlyCompensation.length) * 19);
@@ -89,7 +105,7 @@ export function createCompensationPdf(input: {
     "0.9 0.91 0.92 RG 48 " + (metricsY - 9) + " m 564 " + (metricsY - 9) + " l S",
   );
   scenario.metrics.slice(0, 6).forEach((metric, index) => {
-    commands.push(textLine(`${metric.name}: ${metric.weight}%`, 58, metricsY - 30 - index * 16, 8));
+     commands.push(textLine(`${metric.name}: ${metric.weight}% weight / ${metric.achievement}% achieved`, 58, metricsY - 30 - index * 16, 8));
   });
   commands.push(
     textLine("Illustrative only. Review with the board, compensation committee, tax counsel, and legal advisors.", 48, 54, 7),

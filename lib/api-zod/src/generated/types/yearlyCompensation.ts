@@ -12,4 +12,6 @@ export interface YearlyCompensation {
   incentive: number;
   cash: number;
   equity: number;
+  guaranteeTopUp: number;
+  totalComp: number;
 }

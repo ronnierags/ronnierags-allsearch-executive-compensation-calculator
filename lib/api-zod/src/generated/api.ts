@@ -34,6 +34,9 @@ export const createLeadBodyScenarioMarketReferenceMin = 0;
 
 export const createLeadBodyScenarioBaseSalaryMin = 0;
 
+export const createLeadBodyScenarioYearOneProRataPercentMin = 0;
+export const createLeadBodyScenarioYearOneProRataPercentMax = 100;
+
 export const createLeadBodyScenarioAnnualIncreasePercentMin = 0;
 export const createLeadBodyScenarioAnnualIncreasePercentMax = 100;
 
@@ -41,6 +44,25 @@ export const createLeadBodyScenarioTargetIncentivePercentMin = 0;
 export const createLeadBodyScenarioTargetIncentivePercentMax = 1000;
 
 export const createLeadBodyScenarioMaximumMultipleMin = 0;
+
+export const createLeadBodyScenarioAnnualEquityGrantMin = 0;
+
+export const createLeadBodyScenarioEquityVestingYearsMax = 15;
+
+export const createLeadBodyScenarioEquityValueFactorPercentMin = 0;
+
+export const createLeadBodyScenarioMinimumAnnualCashGuaranteeMin = 0;
+
+export const createLeadBodyScenarioGuaranteeDurationMonthsMin = 0;
+export const createLeadBodyScenarioGuaranteeDurationMonthsMax = 120;
+
+export const createLeadBodyScenarioSeveranceMonthsMin = 0;
+export const createLeadBodyScenarioSeveranceMonthsMax = 60;
+
+export const createLeadBodyScenarioChangeInControlMultipleMin = 0;
+
+export const createLeadBodyScenarioMetricsItemAchievementMin = 0;
+export const createLeadBodyScenarioMetricsItemAchievementMax = 200;
 
 
 
@@ -57,19 +79,30 @@ export const CreateLeadBody = zod.object({
   "yearsToModel": zod.number().int().min(1).max(createLeadBodyScenarioYearsToModelMax),
   "marketReference": zod.number().min(createLeadBodyScenarioMarketReferenceMin),
   "baseSalary": zod.number().min(createLeadBodyScenarioBaseSalaryMin),
+  "yearOneProRataPercent": zod.number().min(createLeadBodyScenarioYearOneProRataPercentMin).max(createLeadBodyScenarioYearOneProRataPercentMax),
   "annualIncreasePercent": zod.number().min(createLeadBodyScenarioAnnualIncreasePercentMin).max(createLeadBodyScenarioAnnualIncreasePercentMax),
   "targetIncentivePercent": zod.number().min(createLeadBodyScenarioTargetIncentivePercentMin).max(createLeadBodyScenarioTargetIncentivePercentMax),
   "maximumMultiple": zod.number().min(createLeadBodyScenarioMaximumMultipleMin),
+  "annualEquityGrant": zod.number().min(createLeadBodyScenarioAnnualEquityGrantMin),
+  "equityVestingYears": zod.number().min(1).max(createLeadBodyScenarioEquityVestingYearsMax),
+  "equityValueFactorPercent": zod.number().min(createLeadBodyScenarioEquityValueFactorPercentMin),
+  "minimumAnnualCashGuarantee": zod.number().min(createLeadBodyScenarioMinimumAnnualCashGuaranteeMin),
+  "guaranteeDurationMonths": zod.number().min(createLeadBodyScenarioGuaranteeDurationMonthsMin).max(createLeadBodyScenarioGuaranteeDurationMonthsMax),
+  "severanceMonths": zod.number().min(createLeadBodyScenarioSeveranceMonthsMin).max(createLeadBodyScenarioSeveranceMonthsMax),
+  "changeInControlMultiple": zod.number().min(createLeadBodyScenarioChangeInControlMultipleMin),
   "metrics": zod.array(zod.object({
   "name": zod.string(),
-  "weight": zod.number()
+  "weight": zod.number(),
+  "achievement": zod.number().min(createLeadBodyScenarioMetricsItemAchievementMin).max(createLeadBodyScenarioMetricsItemAchievementMax)
 })),
   "yearlyCompensation": zod.array(zod.object({
   "year": zod.string(),
   "base": zod.number(),
   "incentive": zod.number(),
   "cash": zod.number(),
-  "equity": zod.number()
+  "equity": zod.number(),
+  "guaranteeTopUp": zod.number(),
+  "totalComp": zod.number()
 }))
 })
 })
@@ -91,6 +124,9 @@ export const listLeadsResponseScenarioMarketReferenceMin = 0;
 
 export const listLeadsResponseScenarioBaseSalaryMin = 0;
 
+export const listLeadsResponseScenarioYearOneProRataPercentMin = 0;
+export const listLeadsResponseScenarioYearOneProRataPercentMax = 100;
+
 export const listLeadsResponseScenarioAnnualIncreasePercentMin = 0;
 export const listLeadsResponseScenarioAnnualIncreasePercentMax = 100;
 
@@ -98,6 +134,25 @@ export const listLeadsResponseScenarioTargetIncentivePercentMin = 0;
 export const listLeadsResponseScenarioTargetIncentivePercentMax = 1000;
 
 export const listLeadsResponseScenarioMaximumMultipleMin = 0;
+
+export const listLeadsResponseScenarioAnnualEquityGrantMin = 0;
+
+export const listLeadsResponseScenarioEquityVestingYearsMax = 15;
+
+export const listLeadsResponseScenarioEquityValueFactorPercentMin = 0;
+
+export const listLeadsResponseScenarioMinimumAnnualCashGuaranteeMin = 0;
+
+export const listLeadsResponseScenarioGuaranteeDurationMonthsMin = 0;
+export const listLeadsResponseScenarioGuaranteeDurationMonthsMax = 120;
+
+export const listLeadsResponseScenarioSeveranceMonthsMin = 0;
+export const listLeadsResponseScenarioSeveranceMonthsMax = 60;
+
+export const listLeadsResponseScenarioChangeInControlMultipleMin = 0;
+
+export const listLeadsResponseScenarioMetricsItemAchievementMin = 0;
+export const listLeadsResponseScenarioMetricsItemAchievementMax = 200;
 
 
 
@@ -115,19 +170,30 @@ export const ListLeadsResponseItem = zod.object({
   "yearsToModel": zod.number().int().min(1).max(listLeadsResponseScenarioYearsToModelMax),
   "marketReference": zod.number().min(listLeadsResponseScenarioMarketReferenceMin),
   "baseSalary": zod.number().min(listLeadsResponseScenarioBaseSalaryMin),
+  "yearOneProRataPercent": zod.number().min(listLeadsResponseScenarioYearOneProRataPercentMin).max(listLeadsResponseScenarioYearOneProRataPercentMax),
   "annualIncreasePercent": zod.number().min(listLeadsResponseScenarioAnnualIncreasePercentMin).max(listLeadsResponseScenarioAnnualIncreasePercentMax),
   "targetIncentivePercent": zod.number().min(listLeadsResponseScenarioTargetIncentivePercentMin).max(listLeadsResponseScenarioTargetIncentivePercentMax),
   "maximumMultiple": zod.number().min(listLeadsResponseScenarioMaximumMultipleMin),
+  "annualEquityGrant": zod.number().min(listLeadsResponseScenarioAnnualEquityGrantMin),
+  "equityVestingYears": zod.number().min(1).max(listLeadsResponseScenarioEquityVestingYearsMax),
+  "equityValueFactorPercent": zod.number().min(listLeadsResponseScenarioEquityValueFactorPercentMin),
+  "minimumAnnualCashGuarantee": zod.number().min(listLeadsResponseScenarioMinimumAnnualCashGuaranteeMin),
+  "guaranteeDurationMonths": zod.number().min(listLeadsResponseScenarioGuaranteeDurationMonthsMin).max(listLeadsResponseScenarioGuaranteeDurationMonthsMax),
+  "severanceMonths": zod.number().min(listLeadsResponseScenarioSeveranceMonthsMin).max(listLeadsResponseScenarioSeveranceMonthsMax),
+  "changeInControlMultiple": zod.number().min(listLeadsResponseScenarioChangeInControlMultipleMin),
   "metrics": zod.array(zod.object({
   "name": zod.string(),
-  "weight": zod.number()
+  "weight": zod.number(),
+  "achievement": zod.number().min(listLeadsResponseScenarioMetricsItemAchievementMin).max(listLeadsResponseScenarioMetricsItemAchievementMax)
 })),
   "yearlyCompensation": zod.array(zod.object({
   "year": zod.string(),
   "base": zod.number(),
   "incentive": zod.number(),
   "cash": zod.number(),
-  "equity": zod.number()
+  "equity": zod.number(),
+  "guaranteeTopUp": zod.number(),
+  "totalComp": zod.number()
 }))
 })
 })

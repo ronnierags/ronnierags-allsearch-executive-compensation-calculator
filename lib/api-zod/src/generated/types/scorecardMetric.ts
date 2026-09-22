@@ -9,4 +9,9 @@
 export interface ScorecardMetric {
   name: string;
   weight: number;
+  /**
+     * @minimum 0
+     * @maximum 200
+     */
+  achievement: number;
 }

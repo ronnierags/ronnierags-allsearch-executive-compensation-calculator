@@ -21,6 +21,11 @@ export const ScenarioInputCompanyType = {
 export interface ScorecardMetric {
   name: string;
   weight: number;
+  /**
+     * @minimum 0
+     * @maximum 200
+     */
+  achievement: number;
 }
 
 export interface YearlyCompensation {
@@ -29,6 +34,8 @@ export interface YearlyCompensation {
   incentive: number;
   cash: number;
   equity: number;
+  guaranteeTopUp: number;
+  totalComp: number;
 }
 
 export interface ScenarioInput {
@@ -48,6 +55,11 @@ export interface ScenarioInput {
      * @minimum 0
      * @maximum 100
      */
+  yearOneProRataPercent: number;
+  /**
+     * @minimum 0
+     * @maximum 100
+     */
   annualIncreasePercent: number;
   /**
      * @minimum 0
@@ -56,6 +68,29 @@ export interface ScenarioInput {
   targetIncentivePercent: number;
   /** @minimum 0 */
   maximumMultiple: number;
+  /** @minimum 0 */
+  annualEquityGrant: number;
+  /**
+     * @minimum 1
+     * @maximum 15
+     */
+  equityVestingYears: number;
+  /** @minimum 0 */
+  equityValueFactorPercent: number;
+  /** @minimum 0 */
+  minimumAnnualCashGuarantee: number;
+  /**
+     * @minimum 0
+     * @maximum 120
+     */
+  guaranteeDurationMonths: number;
+  /**
+     * @minimum 0
+     * @maximum 60
+     */
+  severanceMonths: number;
+  /** @minimum 0 */
+  changeInControlMultiple: number;
   metrics: ScorecardMetric[];
   yearlyCompensation: YearlyCompensation[];
 }

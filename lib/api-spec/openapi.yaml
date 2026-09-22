@@ -100,9 +100,17 @@ components:
         yearsToModel: { type: integer, minimum: 1, maximum: 15 }
         marketReference: { type: number, minimum: 0 }
         baseSalary: { type: number, minimum: 0 }
+        yearOneProRataPercent: { type: number, minimum: 0, maximum: 100 }
         annualIncreasePercent: { type: number, minimum: 0, maximum: 100 }
         targetIncentivePercent: { type: number, minimum: 0, maximum: 1000 }
         maximumMultiple: { type: number, minimum: 0 }
+        annualEquityGrant: { type: number, minimum: 0 }
+        equityVestingYears: { type: number, minimum: 1, maximum: 15 }
+        equityValueFactorPercent: { type: number, minimum: 0 }
+        minimumAnnualCashGuarantee: { type: number, minimum: 0 }
+        guaranteeDurationMonths: { type: number, minimum: 0, maximum: 120 }
+        severanceMonths: { type: number, minimum: 0, maximum: 60 }
+        changeInControlMultiple: { type: number, minimum: 0 }
         metrics:
           type: array
           items:
@@ -111,14 +119,15 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/YearlyCompensation"
-      required: [companyType, candidateRole, year, yearsToModel, marketReference, baseSalary, annualIncreasePercent, targetIncentivePercent, maximumMultiple, metrics, yearlyCompensation]
+      required: [companyType, candidateRole, year, yearsToModel, marketReference, baseSalary, yearOneProRataPercent, annualIncreasePercent, targetIncentivePercent, maximumMultiple, annualEquityGrant, equityVestingYears, equityValueFactorPercent, minimumAnnualCashGuarantee, guaranteeDurationMonths, severanceMonths, changeInControlMultiple, metrics, yearlyCompensation]
     ScorecardMetric:
       type: object
       additionalProperties: false
       properties:
         name: { type: string }
         weight: { type: number }
-      required: [name, weight]
+        achievement: { type: number, minimum: 0, maximum: 200 }
+      required: [name, weight, achievement]
     YearlyCompensation:
       type: object
       additionalProperties: false
@@ -128,7 +137,9 @@ components:
         incentive: { type: number }
         cash: { type: number }
         equity: { type: number }
-      required: [year, base, incentive, cash, equity]
+        guaranteeTopUp: { type: number }
+        totalComp: { type: number }
+      required: [year, base, incentive, cash, equity, guaranteeTopUp, totalComp]
     LeadInput:
       type: object
       additionalProperties: false
