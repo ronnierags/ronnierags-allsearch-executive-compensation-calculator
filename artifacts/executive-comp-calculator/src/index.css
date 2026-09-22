@@ -8,7 +8,22 @@
 @theme inline { --color-background:hsl(var(--background)); --color-foreground:hsl(var(--foreground)); --color-border:hsl(var(--border)); --color-input:hsl(var(--input)); --color-ring:hsl(var(--ring)); --color-card:hsl(var(--card)); --color-card-foreground:hsl(var(--card-foreground)); --color-primary:hsl(var(--primary)); --color-primary-foreground:hsl(var(--primary-foreground)); --color-muted:hsl(var(--muted)); --color-muted-foreground:hsl(var(--muted-foreground)); --font-sans:var(--app-font-sans); --font-serif:var(--app-font-serif); }
 :root { --background:42 18% 96%; --foreground:215 28% 22%; --border:215 20% 88%; --input:215 20% 88%; --ring:43 48% 53%; --card:42 33% 99%; --card-foreground:215 28% 22%; --primary:214 62% 21%; --primary-foreground:42 33% 99%; --muted:215 18% 49%; --muted-foreground:215 14% 53%; --app-font-sans:'DM Sans',sans-serif; --app-font-serif:'Libre Baskerville',serif; --radius:.45rem; }
 .dark { --background:214 45% 12%; --foreground:42 33% 96%; --card:214 40% 16%; --card-foreground:42 33% 96%; --primary:43 48% 53%; --primary-foreground:214 45% 12%; }
-@layer base { * { @apply border-border; } body { @apply font-sans antialiased bg-background text-foreground; margin:0; } button,input { font:inherit; } }
+@layer base {
+  * { @apply border-border; }
+  body { @apply font-sans antialiased bg-background text-foreground; margin:0; }
+  button,input { font:inherit; }
+  button {
+    border: 1px solid #c9d3dc;
+    border-radius: 7px;
+    transition: border-color .16s ease, box-shadow .16s ease, background-color .16s ease;
+  }
+  button:hover { border-color: #9eafbd; }
+  button:focus-visible {
+    border-color: #b49743;
+    box-shadow: 0 0 0 3px rgba(195,163,76,.18);
+    outline: none;
+  }
+}
 
 /* Keep the calculator's configuration fields visibly distinct on the navy header. */
 main > div:first-child label > input {
@@ -166,7 +181,131 @@ main aside .score-matrix {
   padding-top: 8px;
   border-top: 1px solid #e5e9ec;
 }
+
+/* The annual model belongs in the full-width workspace, not in the narrow
+   configuration rail. Every value is tied directly to a visible calendar year. */
+.modeling-panel {
+  min-width: 0;
+  max-width: 100%;
+}
+.modeling-panel > button {
+  width: calc(100% - 16px);
+  margin: 8px;
+  border: 1px solid #c9d3dc;
+  border-radius: 7px;
+}
+.modeling-panel > button:hover,
+.modeling-panel > button:active,
+.modeling-panel > button:focus,
+.modeling-panel > button:focus-visible {
+  border-color: #b49743 !important;
+  box-shadow: 0 0 0 3px rgba(195,163,76,.2) !important;
+}
+.modeling-matrix-scroll {
+  max-width: 100%;
+  scrollbar-color: #aebdca #edf1f3;
+  scrollbar-width: thin;
+}
+.modeling-matrix-scroll::-webkit-scrollbar { height: 9px; }
+.modeling-matrix-scroll::-webkit-scrollbar-track {
+  background: #edf1f3;
+  border-radius: 99px;
+}
+.modeling-matrix-scroll::-webkit-scrollbar-thumb {
+  background: #aebdca;
+  border: 2px solid #edf1f3;
+  border-radius: 99px;
+}
+.modeling-matrix {
+  display: grid;
+  gap: 6px 8px;
+  min-width: max-content;
+  align-items: center;
+}
+.modeling-matrix-corner,
+.modeling-matrix-year {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  min-height: 30px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #d5dee6;
+  background: #fffefb;
+  color: #536579;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .055em;
+  text-transform: uppercase;
+}
+.modeling-matrix-corner {
+  left: 0;
+  z-index: 4;
+  padding-left: 10px;
+  text-align: left;
+}
+.modeling-matrix-year {
+  justify-content: flex-end;
+  padding-right: 9px;
+  color: #173456;
+}
+.modeling-matrix-group,
+.modeling-matrix-group-fill {
+  min-height: 28px;
+  border-top: 1px solid #dbe2e8;
+  border-bottom: 1px solid #e5eaee;
+  background: #f1f4f6;
+}
+.modeling-matrix-group {
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  color: #29415e;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.modeling-matrix-label {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  border-radius: 6px;
+  background: #fafbf9;
+  color: #43566b;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.25;
+  box-shadow: 8px 0 12px -12px rgba(20,46,85,.45);
+}
+.modeling-matrix input {
+  box-sizing: border-box;
+}
+main section {
+  min-width: 0;
+}
+body button {
+  border: 1px solid #c9d3dc !important;
+  border-radius: 7px !important;
+}
+body button:hover {
+  border-color: #9eafbd !important;
+}
+body button:focus,
+body button:focus-visible {
+  border-color: #b49743 !important;
+  box-shadow: 0 0 0 3px rgba(195,163,76,.2) !important;
+  outline: none;
+}
 @media (max-width: 640px) {
   main aside input,
   main aside select { min-height: 34px; }
+  .modeling-matrix-label { min-height: 40px; }
 }
