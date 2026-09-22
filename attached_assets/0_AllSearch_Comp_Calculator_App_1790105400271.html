@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Executive Compensation Calculator — AllSearch Executive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+ --navy:#12294B; --navy2:#1F3A5F; --gold:#B8923F; --gold-soft:#F5EAD1;
+ --ink:#23262B; --grey:#6B7078; --line:#E3E7EC; --bg:#F4F6F9; --white:#fff;
+ --blue:#DDEBF7; --green:#E2EFDA; --purple:#E6E0F0; --orange:#FCE4D6; --tan:#F5E6D0; --red:#FADBD8; --greyc:#EDEDED;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',system-ui,sans-serif;color:var(--ink);background:var(--bg);font-size:14px;line-height:1.45}
+h1,h2,h3,.brandfont{font-family:'Poppins',sans-serif}
+header{background:var(--white);border-bottom:3px solid var(--gold);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+header img{height:44px}
+.h-right{text-align:right}
+.h-title{font-family:'Poppins';font-weight:700;color:var(--navy);font-size:18px;letter-spacing:.2px}
+.h-sub{color:var(--grey);font-size:12px}
+.wrap{max-width:1500px;margin:0 auto;padding:18px 20px}
+.configbar{background:var(--navy);color:#fff;border-radius:12px;padding:16px 18px;display:flex;gap:22px;flex-wrap:wrap;align-items:flex-end;margin-bottom:18px}
+.configbar label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:#AEBBCB;margin-bottom:4px}
+.configbar input,.configbar select{font-family:inherit;font-size:14px;padding:7px 10px;border-radius:8px;border:1px solid #2c4a72;background:#fff;color:var(--ink);min-width:120px}
+.seg{display:inline-flex;background:#0d1f3a;border-radius:9px;padding:3px}
+.seg button{font-family:'Poppins';font-weight:600;border:0;background:transparent;color:#AEBBCB;padding:8px 16px;border-radius:7px;cursor:pointer;font-size:13px}
+.seg button.active{background:var(--gold);color:#12294B}
+.layout{display:grid;grid-template-columns:minmax(340px,420px) 1fr;gap:20px;align-items:start}
+@media(max-width:980px){.layout{grid-template-columns:1fr}}
+.panel{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.acc{border-bottom:1px solid var(--line)}
+.acc:last-child{border-bottom:0}
+.acc>.head{display:flex;align-items:center;gap:10px;padding:13px 16px;cursor:pointer;user-select:none;font-family:'Poppins';font-weight:600;color:var(--navy);font-size:13.5px}
+.acc>.head:hover{background:#F8FAFC}
+.acc>.head .chev{margin-left:auto;transition:transform .2s;color:var(--grey)}
+.acc.open>.head .chev{transform:rotate(90deg)}
+.acc>.body{display:none;padding:6px 16px 16px}
+.acc.open>.body{display:block}
+.swatch{width:9px;height:18px;border-radius:3px;flex:0 0 auto}
+.fieldrow{display:flex;align-items:center;gap:10px;margin:9px 0}
+.fieldrow label{flex:1;color:var(--ink);font-size:13px}
+.fieldrow .hint{color:var(--grey);font-size:11px;flex-basis:100%;margin-top:-4px}
+input.val,select.val{width:120px;text-align:right;font-family:inherit;font-size:13px;padding:6px 9px;border:1px solid var(--line);border-radius:7px;background:#FFFDF5}
+input.val:focus{outline:2px solid var(--gold)}
+select.val{background:#fff;text-align:left}
+.subhead{font-family:'Poppins';font-weight:600;font-size:12px;color:var(--gold);text-transform:uppercase;letter-spacing:.5px;margin:14px 0 6px}
+table.grid{width:100%;border-collapse:collapse;font-size:12px}
+table.grid th,table.grid td{border:1px solid var(--line);padding:4px 6px;text-align:center}
+table.grid th{background:#F1F5FA;font-weight:600;color:var(--navy)}
+table.grid td input{width:100%;border:0;background:#FFFDF5;text-align:center;font-family:inherit;font-size:12px;padding:3px}
+table.grid td input:focus{outline:1px solid var(--gold)}
+table.grid td.lbl{text-align:left;background:#fff;font-weight:500}
+.minibtn{font-family:'Poppins';font-size:11px;font-weight:600;border:1px solid var(--navy);color:var(--navy);background:#fff;border-radius:6px;padding:4px 9px;cursor:pointer}
+.minibtn:hover{background:var(--navy);color:#fff}
+.rm{color:#b23;cursor:pointer;font-weight:700;border:0;background:none;font-size:14px}
+/* results */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+.kpi{background:#fff;border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:10px;padding:12px 14px}
+.kpi .lab{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--grey)}
+.kpi .num{font-family:'Poppins';font-weight:700;font-size:20px;color:var(--navy);margin-top:2px}
+.chartcard{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:16px}
+.chartcard h3{font-size:13px;color:var(--navy);margin-bottom:8px}
+.chgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:1200px){.chgrid{grid-template-columns:1fr}}
+.rtable-wrap{overflow-x:auto;background:#fff;border:1px solid var(--line);border-radius:12px}
+table.res{width:100%;border-collapse:collapse;font-size:12px;min-width:640px}
+table.res th,table.res td{padding:7px 9px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+table.res th{background:var(--navy);color:#fff;font-weight:600;position:sticky;top:0}
+table.res td.rl,table.res th.rl{text-align:left}
+table.res tr.sect td{background:#EEF2F7;font-weight:700;color:var(--navy);text-align:left}
+table.res tr.total td{background:var(--green);font-weight:700;color:var(--navy)}
+table.res tr.sev td{background:var(--red)}
+table.res .cband{border-left:6px solid transparent}
+.note{color:var(--grey);font-size:11px;font-style:italic;margin:8px 2px}
+.pill{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:6px;vertical-align:middle}
+.pill.pub{background:var(--blue);color:#1a4a7a}.pill.priv{background:var(--green);color:#3a6b2a}.pill.pe{background:var(--purple);color:#5a3a8a}
+.hidden{display:none!important}
+footer{max-width:1500px;margin:10px auto 30px;padding:0 20px;color:var(--grey);font-size:11px;font-style:italic}
+</style>
+</head>
+<body>
+<header>
+ <img src="data:image/png;base64,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" alt="AllSearch Executive">
+ <div class="h-right">
+   <div class="h-title">Executive Compensation Calculator</div>
+   <div class="h-sub">AllSearch Executive &bull; Public &bull; Private &bull; PE-backed</div>
+ </div>
+</header>
+<div class="wrap">
+ <div class="configbar">
+   <div>
+     <label>Company type</label>
+     <div class="seg" id="typeSeg">
+       <button data-type="public">Public</button>
+       <button data-type="private" class="active">Private</button>
+       <button data-type="pe">PE-backed</button>
+     </div>
+   </div>
+   <div><label>Candidate / role</label><input id="cname" value="" placeholder="Name / title"></div>
+   <div><label>Year 1</label><input id="yr1" type="number" value="2026" style="width:90px"></div>
+   <div><label>Years to model</label><input id="nyears" type="number" value="7" min="3" max="10" style="width:80px"></div>
+   <div><label>Market reference (total comp)</label><input id="bench" type="number" value="0" style="width:130px"></div>
+   <div style="margin-left:auto"><label>&nbsp;</label><button class="minibtn" id="resetBtn" style="padding:8px 14px">Reset</button></div>
+ </div>
+ <div class="layout">
+   <div class="panel" id="inputs"></div>
+   <div id="results"></div>
+ </div>
+</div>
+<footer>Confidential working tool for discussion purposes only. Not an offer of employment or legal, tax, or financial advice; all figures and terms are established in the signed agreement and should be reviewed with counsel. &copy; AllSearch Executive. Designed and built by Ronnie Ragusa. All rights reserved.</footer>
+<script id="APPJS">
+// ---------- Brand colors for charts ----------
+const C={navy:'#12294B',navy2:'#1F3A5F',gold:'#B8923F',blue:'#7FA8D6',green:'#8FC07A',
+ purple:'#9B7FC0',orange:'#E8A87C',tan:'#D9B98A',grey:'#B7BEC7'};
+const SW={base:'#DDEBF7',bonus:'#E2EFDA',equity:'#E6E0F0',milestone:'#FCE4D6',onetime:'#F5E6D0',sev:'#FADBD8',benefit:'#EDEDED',pe:'#E6E0F0'};
+
+// ---------- STATE ----------
+const state={
+ type:'private', cname:'', yr1:2026, nyears:7, bench:0,
+ // base
+ base:0, baseInc:0.03, proration:1,
+ // STI
+ stiTarget:0.6, stiMax:1.5,
+ // floor
+ floor:0, floorFrom:1, floorTo:2,
+ // one-time
+ signon:0, signonYr:1, reloc:0, relocYr:1, relocGU:0,
+ housingMo:0, housingMonths:6, housingYr:1, housingGU:0, retention:0, retentionYr:2,
+ // scorecard metrics
+ metrics:[
+   {name:'EBITDA / gross-profit growth',w:0.35},
+   {name:'Cash conversion',w:0.20},
+   {name:'Safety',w:0.15},
+   {name:'Backlog quality',w:0.15},
+   {name:'Strategic milestones',w:0.15},
+ ],
+ // equity - public
+ rsu:0, rsuVest:4, psu:0, psuPay:1, psuVest:3, opt:0, optVest:4, eqStart:1,
+ // equity - private (phantom)
+ phantomPool:0.05, phantomCoef:0, evMult:6, evBase:0, phVest:5, phCliff:1, valMethod:'ebitda',
+ // PE
+ peOwn:0, peEntry:0, peExit:0, peExitYr:7, peHurdle:2, peOwn2:0, peHurdle2:3,
+ // milestones
+ milestones:[
+   {name:'Return to target EBITDA',cat:'Rebuild',yr:3,amt:0},
+   {name:'Revenue target',cat:'Sales',yr:4,amt:0},
+   {name:'Acquisition / M&A',cat:'M&A',yr:5,amt:0},
+ ],
+ // severance
+ sevMult:1, sevInclBonus:1, sevAccel:1,
+ // benefits
+ perks:0, retire:0,
+ // per-year grids
+ rev:[], ebitda:[], eqGrowth:[], manualEV:[], scores:[] // scores = [metricIdx][year]
+};
+function ensureYearArrays(){
+ const n=state.nyears;
+ ['rev','ebitda','eqGrowth','manualEV'].forEach(k=>{while(state[k].length<n)state[k].push(0);state[k].length=n;});
+ // scores grid
+ while(state.scores.length<state.metrics.length)state.scores.push([]);
+ state.scores.length=state.metrics.length;
+ state.scores.forEach(row=>{while(row.length<n)row.push(1);row.length=n;});
+}
+
+// ---------- SECTION SCHEMA (which sections show per type) ----------
+const T_ALL=['public','private','pe'];
+const sections=[
+ {id:'base',title:'Base salary',sw:'base',types:T_ALL},
+ {id:'sti',title:'Annual incentive (scorecard)',sw:'bonus',types:T_ALL},
+ {id:'floor',title:'Guaranteed floor (turnaround)',sw:'bonus',types:T_ALL},
+ {id:'onetime',title:'One-time payments',sw:'onetime',types:T_ALL},
+ {id:'pubeq',title:'Public equity (RSUs / PSUs / options)',sw:'equity',types:['public']},
+ {id:'phantom',title:'Phantom equity / LTI',sw:'equity',types:['private','pe']},
+ {id:'pe',title:'PE deal (MIP, exit, hurdles)',sw:'pe',types:['pe']},
+ {id:'milestones',title:'Milestone / incentive bonuses',sw:'milestone',types:T_ALL},
+ {id:'severance',title:'Severance (contingent)',sw:'sev',types:T_ALL},
+ {id:'benefits',title:'Benefits & retirement',sw:'benefit',types:T_ALL},
+ {id:'assumptions',title:'Per-year assumptions',sw:'benefit',types:T_ALL},
+];
+
+// ---------- helpers ----------
+const $=s=>document.querySelector(s);
+const fmt=v=>{if(!isFinite(v))v=0;return (v<0?'-':'')+'$'+Math.round(Math.abs(v)).toLocaleString();};
+const pct=v=>Math.round(v*100)+'%';
+function num(v){v=parseFloat(v);return isNaN(v)?0:v;}
+function field(label,key,kind,hint){
+ let inp;
+ if(kind==='pct') inp=`<input class="val" data-key="${key}" data-kind="pct" value="${(state[key]*100)}">`;
+ else if(kind==='usd'||kind==='num') inp=`<input class="val" type="number" data-key="${key}" data-kind="${kind}" value="${state[key]}">`;
+ else inp=`<input class="val" data-key="${key}" data-kind="text" value="${state[key]}">`;
+ return `<div class="fieldrow"><label>${label}${kind==='pct'?' (%)':''}</label>${inp}</div>`+(hint?`<div class="hint">${hint}</div>`:'');
+}
+function selField(label,key,opts){
+ let o=opts.map(([v,t])=>`<option value="${v}" ${state[key]===v?'selected':''}>${t}</option>`).join('');
+ return `<div class="fieldrow"><label>${label}</label><select class="val" data-key="${key}" data-kind="sel">${o}</select></div>`;
+}
+
+// ---------- render input body per section ----------
+function bodyFor(id){
+ ensureYearArrays();
+ const n=state.nyears;
+ if(id==='base') return field('Starting base salary','base','usd')+field('Annual increase','baseInc','pct')+field('Year-1 proration','proration','pct','25% for a Q4 start; 100% for full year')+`<div class="note">Competitive, but not the primary wealth mechanism.</div>`;
+ if(id==='sti'){
+   let rows=state.metrics.map((m,i)=>`<tr><td class="lbl"><input data-mkey="name" data-mi="${i}" value="${m.name}" style="width:100%;border:0;background:#FFFDF5;padding:3px"></td><td style="width:70px"><input data-mkey="w" data-mi="${i}" value="${(m.w*100)}" style="width:100%;border:0;background:#FFFDF5;text-align:center;padding:3px">%</td><td style="width:26px"><button class="rm" data-rmmetric="${i}">×</button></td></tr>`).join('');
+   let tw=state.metrics.reduce((a,m)=>a+m.w,0);
+   return field('Target incentive (% of base)','stiTarget','pct')+field('Maximum (× base)','stiMax','num')+
+   `<div class="subhead">Scorecard metrics &amp; weights</div>
+    <table class="grid"><thead><tr><th class="lbl">Metric</th><th>Weight</th><th></th></tr></thead><tbody>${rows}</tbody></table>
+    <div class="note">Total weight: <b>${Math.round(tw*100)}%</b> (aim for 100%). Score each metric per year in Per-year assumptions.</div>
+    <button class="minibtn" id="addMetric">+ Add metric</button>`;
+ }
+ if(id==='floor') return field('Guaranteed total floor (base+bonus)','floor','usd','0 = no floor')+field('Applies from year #','floorFrom','num')+field('Applies through year #','floorTo','num');
+ if(id==='onetime') return field('Sign-on / make-whole','signon','usd')+field('— paid in year #','signonYr','num')
+   +field('Relocation lump sum','reloc','usd')+field('— paid in year #','relocYr','num')+field('— tax gross-up','relocGU','pct')
+   +field('Corporate housing (per month)','housingMo','usd')+field('— number of months','housingMonths','num')+field('— paid in year #','housingYr','num')+field('— tax gross-up','housingGU','pct')
+   +field('Retention bonus','retention','usd')+field('— paid in year #','retentionYr','num');
+ if(id==='pubeq') return field('RSU annual grant (time-vested)','rsu','usd')+field('— vesting years','rsuVest','num')
+   +field('PSU annual target grant','psu','usd')+field('— expected payout','psuPay','pct')+field('— vesting years','psuVest','num')
+   +field('Stock options — annual value','opt','usd')+field('— vesting years','optVest','num')+field('Equity grants start in year #','eqStart','num');
+ if(id==='phantom') return phantomBody();
+ if(id==='pe') return field('Management ownership %','peOwn','pct','CEO share of the pool')
+   +field('Entry enterprise value','peEntry','usd')+field('Exit enterprise value','peExit','usd')+field('Exit paid in year #','peExitYr','num')
+   +field('MOIC hurdle to unlock','peHurdle','num','payout only if exit ÷ entry ≥ hurdle')
+   +`<div class="subhead">Ratchet (optional)</div>`+field('Extra ownership % above higher MOIC','peOwn2','pct')+field('— higher MOIC','peHurdle2','num');
+ if(id==='milestones'){
+   let rows=state.milestones.map((m,i)=>`<tr>
+     <td class="lbl"><input data-lkey="name" data-li="${i}" value="${m.name}" style="width:100%;border:0;background:#FFFDF5;padding:3px"></td>
+     <td style="width:74px"><input data-lkey="cat" data-li="${i}" value="${m.cat}" style="width:100%;border:0;background:#FFFDF5;text-align:center;padding:3px"></td>
+     <td style="width:44px"><input data-lkey="yr" data-li="${i}" value="${m.yr}" style="width:100%;border:0;background:#FFFDF5;text-align:center;padding:3px"></td>
+     <td style="width:90px"><input data-lkey="amt" data-li="${i}" value="${m.amt}" style="width:100%;border:0;background:#FFFDF5;text-align:right;padding:3px"></td>
+     <td style="width:24px"><button class="rm" data-rmmile="${i}">×</button></td></tr>`).join('');
+   return `<table class="grid"><thead><tr><th class="lbl">Milestone</th><th>Cat.</th><th>Yr</th><th>Award</th><th></th></tr></thead><tbody>${rows}</tbody></table>
+   <div class="note">Each pays once, in its trigger year. Multiple may pay in the same year.</div>
+   <button class="minibtn" id="addMile">+ Add milestone</button>`;
+ }
+ if(id==='severance') return field('Severance multiple (× base [+bonus])','sevMult','num')
+   +selField('Base includes target incentive?','sevInclBonus',[['1','Base + target incentive'],['0','Base only']])
+   +field('Accelerate unvested equity','sevAccel','pct','100% full, 0% none, 50% half')
+   +`<div class="note">Contingent — shown as a reference, not in the totals. Applies on termination without cause / good-reason resignation.</div>`;
+ if(id==='benefits') return field('Perks & benefits (annual)','perks','usd')+field('Retirement / 401k + SERP (annual)','retire','usd');
+ if(id==='assumptions'){
+   const yrs=Array.from({length:n},(_,i)=>`<th>${state.yr1+i}</th>`).join('');
+   const grow=(label,key)=>`<tr><td class="lbl">${label}</td>${Array.from({length:n},(_,i)=>`<td><input data-gkey="${key}" data-gi="${i}" value="${state[key][i]}"></td>`).join('')}</tr>`;
+   let metricRows=state.metrics.map((m,mi)=>`<tr><td class="lbl">${m.name}</td>${Array.from({length:n},(_,i)=>`<td><input data-skey="${mi}" data-si="${i}" value="${Math.round((state.scores[mi][i])*100)}"></td>`).join('')}</tr>`).join('');
+   return `<div class="subhead">Financials</div>
+   <table class="grid"><thead><tr><th class="lbl">Metric \\ Year</th>${yrs}</tr></thead><tbody>
+     ${grow('Revenue (context)','rev')}${grow('EBITDA','ebitda')}${grow('Cumulative equity/EV growth','eqGrowth')}${grow('Manual EV (if used)','manualEV')}
+   </tbody></table>
+   <div class="subhead">Scorecard scores (%, 100 = on target)</div>
+   <table class="grid"><thead><tr><th class="lbl">Metric \\ Year</th>${yrs}</tr></thead><tbody>${metricRows}</tbody></table>`;
+ }
+ return '';
+}
+function phantomBody(){
+ return selField('Enterprise-value method','valMethod',[['ebitda','EBITDA × multiple'],['manual','Manual / appraised']])
+  +field('Phantom equity pool %','phantomPool','pct','CEO share of EV growth')
+  +field('EV multiple (× EBITDA)','evMult','num')+field('Baseline EV (at start)','evBase','usd')
+  +field('Vesting years','phVest','num')+field('Cliff (years)','phCliff','num')
+  +`<div class="note">Value = pool % × EV growth × vested fraction. Sustained EV and retention are what pay.</div>`;
+}
+
+// ---------- CALC ENGINE ----------
+function compute(){
+ ensureYearArrays();
+ const n=state.nyears, s=state;
+ const A={year:[],rev:[],ebitda:[],ev:[],evg:[],base:[],sti:[],floor:[],signon:[],reloc:[],housing:[],retention:[],milestone:[],rsu:[],psu:[],opt:[],phantom:[],peexit:[],perks:[],retire:[],total:[],cash:[],lt:[],sevCash:[],sevEq:[],sevTot:[]};
+ const twTot=s.metrics.reduce((a,m)=>a+m.w,0)||1;
+ for(let i=0;i<n;i++){
+   const yr=i+1, pf=(i===0?s.proration:1);
+   A.year.push(s.yr1+i);
+   A.rev.push(s.rev[i]);
+   A.ebitda.push(s.ebitda[i]);
+   const ev=(s.valMethod==='manual'&&s.manualEV[i]>0)? s.manualEV[i] : s.ebitda[i]*s.evMult;
+   A.ev.push(ev);
+   // EV growth: prefer explicit eqGrowth if provided, else ev - baseline
+   const evg = s.eqGrowth[i]>0 ? s.eqGrowth[i] : Math.max(0, ev - s.evBase);
+   A.evg.push(evg);
+   const base=s.base*Math.pow(1+s.baseInc,i)*pf; A.base.push(base);
+   // scorecard blended score
+   let score=0; s.metrics.forEach((m,mi)=>score+=m.w*(s.scores[mi][i]||0)); score/=twTot;
+   const sti=Math.min(s.stiMax*base, base*s.stiTarget*score); A.sti.push(sti);
+   const floor=(s.floor>0&&yr>=s.floorFrom&&yr<=s.floorTo)?Math.max(0,s.floor*pf-base-sti):0; A.floor.push(floor);
+   A.signon.push(yr===s.signonYr?s.signon:0);
+   A.reloc.push(yr===s.relocYr? s.reloc/(1-s.relocGU):0);
+   A.housing.push(yr===s.housingYr? (s.housingMo*s.housingMonths)/(1-s.housingGU):0);
+   A.retention.push(yr===s.retentionYr?s.retention:0);
+   let mil=0; s.milestones.forEach(m=>{if(m.yr===yr)mil+=num(m.amt);}); A.milestone.push(mil);
+   // public equity
+   const inWin=(g,vest,start)=> (g>0 && yr>=start && yr<=start+vest-1)? g/vest:0;
+   A.rsu.push(s.type==='public'? inWin(s.rsu,s.rsuVest,s.eqStart):0);
+   A.psu.push(s.type==='public'? inWin(s.psu*s.psuPay,s.psuVest,s.eqStart):0);
+   A.opt.push(s.type==='public'? inWin(s.opt,s.optVest,s.eqStart):0);
+   // phantom (private/pe)
+   let phantom=0;
+   if(s.type==='private'||s.type==='pe'){
+     const vf=Math.min(1,Math.max(0,(yr-s.phCliff)/s.phVest));
+     phantom=s.phantomPool*evg*vf;
+   }
+   A.phantom.push(phantom);
+   // PE exit
+   let peexit=0;
+   if(s.type==='pe' && yr===s.peExitYr && s.peEntry>0){
+     const moic=s.peExit/s.peEntry;
+     if(moic>=s.peHurdle){
+       let own=s.peOwn + (moic>=s.peHurdle2? s.peOwn2:0);
+       peexit=own*Math.max(0,s.peExit-s.peEntry);
+     }
+   }
+   A.peexit.push(peexit);
+   A.perks.push(s.perks); A.retire.push(s.retire);
+   const cash=base+sti+floor+A.signon[i]+A.reloc[i]+A.housing[i]+A.retention[i]+mil+s.perks+s.retire;
+   const lt=A.rsu[i]+A.psu[i]+A.opt[i]+phantom+peexit;
+   A.cash.push(cash); A.lt.push(lt); A.total.push(cash+lt);
+   // severance reference
+   const sevBase=base+(s.sevInclBonus==1||s.sevInclBonus==='1'? base*s.stiTarget:0);
+   const sevCash=s.sevMult*sevBase;
+   const fullUnvested=Math.max(0,s.phantomPool*evg - phantom); // phantom unvested
+   const sevEq=s.sevAccel*fullUnvested;
+   A.sevCash.push(sevCash); A.sevEq.push(sevEq); A.sevTot.push(sevCash+sevEq);
+ }
+ return A;
+}
+
+// ---------- RENDER RESULTS ----------
+let ch1,ch2,ch3;
+function renderResults(){
+ const A=compute(), n=state.nyears;
+ const cum=A.total.reduce((a,b)=>a+b,0);
+ const peakLT=Math.max(...A.lt);
+ const y1=A.total[0]||0;
+ const el=$('#results');
+ // build table rows
+ const yhead=A.year.map(y=>`<th>${y}</th>`).join('');
+ const rowsDef=[
+   ['sect','Business context'],
+   ['rev','Revenue',SW.benefit],['ebitda','EBITDA',SW.equity],['ev','Enterprise value',SW.equity],['evg','EV growth',SW.equity],
+   ['sect','Cash compensation'],
+   ['base','Base salary',SW.base],['sti','Annual incentive',SW.bonus],['floor','Guaranteed floor top-up',SW.bonus],['perks','Perks & benefits',SW.benefit],['retire','Retirement / SERP',SW.benefit],
+   ['sect','One-time payments'],
+   ['signon','Sign-on / make-whole',SW.onetime],['reloc','Relocation',SW.onetime],['housing','Housing',SW.onetime],['retention','Retention',SW.onetime],['milestone','Milestones',SW.milestone],
+   ['sect','Long-term incentives / equity'],
+ ];
+ if(state.type==='public'){rowsDef.push(['rsu','RSUs vested',SW.equity],['psu','PSUs vested',SW.equity],['opt','Options vested',SW.equity]);}
+ if(state.type==='private'||state.type==='pe'){rowsDef.push(['phantom','Phantom equity vested',SW.equity]);}
+ if(state.type==='pe'){rowsDef.push(['peexit','PE exit / transaction',SW.pe]);}
+ rowsDef.push(['sect','Totals']);
+ let body='';
+ rowsDef.forEach(r=>{
+   if(r[0]==='sect'){body+=`<tr class="sect"><td class="rl" colspan="${n+1}">${r[1]}</td></tr>`;return;}
+   const [k,lab,band]=r;
+   const cells=A[k].map(v=>`<td>${fmt(v)}</td>`).join('');
+   body+=`<tr><td class="rl cband" style="border-left-color:${band||'transparent'}">${lab}</td>${cells}</tr>`;
+ });
+ // total + splits
+ const trow=A.total.map(v=>`<td>${fmt(v)}</td>`).join('');
+ const crow=A.cash.map(v=>`<td>${fmt(v)}</td>`).join('');
+ const lrow=A.lt.map(v=>`<td>${fmt(v)}</td>`).join('');
+ body+=`<tr class="total"><td class="rl">TOTAL COMPENSATION</td>${trow}</tr>`;
+ body+=`<tr><td class="rl">— of which cash</td>${crow}</tr>`;
+ body+=`<tr><td class="rl">— of which long-term</td>${lrow}</tr>`;
+ if(state.bench>0){const b=A.total.map((v,i)=>`<td>${v>=(i===0?state.bench*state.proration:state.bench)?'✓':'below'}</td>`).join('');body+=`<tr><td class="rl">vs. market ref</td>${b}</tr>`;}
+ // severance panel
+ const scv=A.sevCash.map(v=>`<td>${fmt(v)}</td>`).join('');
+ const sev=A.sevEq.map(v=>`<td>${fmt(v)}</td>`).join('');
+ const svt=A.sevTot.map(v=>`<td>${fmt(v)}</td>`).join('');
+ let sevBlock=`<tr class="sect"><td class="rl" colspan="${n+1}" style="background:${SW.sev}">Severance if a qualifying exit occurred that year (reference — not in totals)</td></tr>
+   <tr class="sev"><td class="rl">Cash severance</td>${scv}</tr>
+   <tr class="sev"><td class="rl">Equity accelerated</td>${sev}</tr>
+   <tr class="sev"><td class="rl"><b>Total severance exposure</b></td>${svt}</tr>`;
+
+ el.innerHTML=`
+  <div class="kpis">
+    <div class="kpi"><div class="lab">Year 1 total</div><div class="num">${fmt(y1)}</div></div>
+    <div class="kpi"><div class="lab">Cumulative (${n} yr)</div><div class="num">${fmt(cum)}</div></div>
+    <div class="kpi"><div class="lab">Peak long-term / yr</div><div class="num">${fmt(peakLT)}</div></div>
+    <div class="kpi"><div class="lab">Company type</div><div class="num" style="font-size:16px">${({public:'Public',private:'Private',pe:'PE-backed'})[state.type]}</div></div>
+  </div>
+  <div class="chgrid">
+    <div class="chartcard"><h3>Total compensation over time</h3><canvas id="chTotal" height="150"></canvas></div>
+    <div class="chartcard"><h3>Cash vs. long-term</h3><canvas id="chSplit" height="150"></canvas></div>
+  </div>
+  <div class="chartcard"><h3 id="ch3title"></h3><canvas id="ch3" height="120"></canvas></div>
+  <div class="rtable-wrap"><table class="res"><thead><tr><th class="rl">Line</th>${yhead}</tr></thead><tbody>${body}${sevBlock}</tbody></table></div>
+  <div class="note">Long-term / equity is value vested that year; it settles per the plan's payout or liquidity terms. Year 1 is prorated by the proration %.</div>
+ `;
+ drawCharts(A);
+}
+function drawCharts(A){
+ const labels=A.year;
+ [ch1,ch2,ch3].forEach(c=>{if(c)c.destroy();});
+ const stack={responsive:true,plugins:{legend:{labels:{font:{family:'Inter',size:11},boxWidth:12}}},scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,ticks:{callback:v=>'$'+(v/1000)+'k'}}}};
+ ch1=new Chart($('#chTotal'),{type:'bar',data:{labels,datasets:[
+   {label:'Base',data:A.base,backgroundColor:C.blue,stack:'s'},
+   {label:'Incentive+cash',data:A.sti.map((v,i)=>v+A.floor[i]+A.signon[i]+A.reloc[i]+A.housing[i]+A.retention[i]+A.milestone[i]+A.perks[i]+A.retire[i]),backgroundColor:C.green,stack:'s'},
+   {label:'Long-term/equity',data:A.lt,backgroundColor:C.purple,stack:'s'},
+ ]},options:stack});
+ ch2=new Chart($('#chSplit'),{type:'bar',data:{labels,datasets:[
+   {label:'Cash',data:A.cash,backgroundColor:C.navy2,stack:'s'},
+   {label:'Long-term',data:A.lt,backgroundColor:C.gold,stack:'s'},
+ ]},options:stack});
+ // adaptive third chart
+ const line={responsive:true,plugins:{legend:{labels:{font:{family:'Inter',size:11},boxWidth:12}}},scales:{x:{grid:{display:false}},y:{ticks:{callback:v=>'$'+(v/1000000).toFixed(1)+'M'}}}};
+ if(state.type==='pe'){
+   $('#ch3title').textContent='Enterprise value & exit';
+   ch3=new Chart($('#ch3'),{type:'line',data:{labels,datasets:[
+     {label:'Enterprise value',data:A.ev,borderColor:C.navy,backgroundColor:'rgba(18,41,75,.08)',fill:true,tension:.25},
+     {label:'PE exit payout',data:A.peexit,borderColor:C.gold,backgroundColor:'rgba(184,146,63,.15)',fill:true,tension:.25},
+   ]},options:line});
+ } else if(state.type==='public'){
+   $('#ch3title').textContent='Equity vehicle mix (vested per year)';
+   ch3=new Chart($('#ch3'),{type:'bar',data:{labels,datasets:[
+     {label:'RSU',data:A.rsu,backgroundColor:C.blue,stack:'e'},
+     {label:'PSU',data:A.psu,backgroundColor:C.green,stack:'e'},
+     {label:'Options',data:A.opt,backgroundColor:C.purple,stack:'e'},
+   ]},options:{...stack}});
+ } else {
+   $('#ch3title').textContent='Phantom equity build (vested per year)';
+   ch3=new Chart($('#ch3'),{type:'line',data:{labels,datasets:[
+     {label:'Phantom equity vested',data:A.phantom,borderColor:C.purple,backgroundColor:'rgba(155,127,192,.15)',fill:true,tension:.25},
+     {label:'EV growth',data:A.evg,borderColor:C.navy,borderDash:[5,4],fill:false,tension:.25},
+   ]},options:line});
+ }
+}
+
+// ---------- RENDER INPUTS ----------
+let openSet=null;
+function renderInputs(){
+ ensureYearArrays();
+ const host=$('#inputs');
+ const visible=sections.filter(sec=>sec.types.includes(state.type));
+ if(openSet===null){ openSet=new Set(visible.slice(0,2).map(s=>s.id)); }
+ host.innerHTML=visible.map((sec)=>{
+   const isOpen=openSet.has(sec.id);
+   const pill = sec.types.length<3? `<span class="pill ${sec.types.includes('pe')&&sec.types.length===1?'pe':sec.types[0]==='public'?'pub':'priv'}">${sec.types.map(t=>({public:'Public',private:'Private',pe:'PE'})[t]).join('/')}</span>`:'';
+   return `<div class="acc ${isOpen?'open':''}" data-acc="${sec.id}">
+     <div class="head"><span class="swatch" style="background:${SW[sec.sw]}"></span>${sec.title}${pill}<span class="chev">▶</span></div>
+     <div class="body">${bodyFor(sec.id)}</div>
+   </div>`;
+ }).join('');
+ bindInputs();
+}
+
+// ---------- BIND ----------
+function bindInputs(){
+ document.querySelectorAll('.acc .head').forEach(h=>h.onclick=()=>{
+   const acc=h.parentElement; acc.classList.toggle('open');
+   const id=acc.dataset.acc;
+   if(acc.classList.contains('open'))openSet.add(id); else openSet.delete(id);
+ });
+ document.querySelectorAll('input.val,select.val').forEach(inp=>{
+   inp.addEventListener('input',e=>{
+     const k=e.target.dataset.key, kind=e.target.dataset.kind;
+     if(!k)return;
+     if(kind==='pct')state[k]=num(e.target.value)/100;
+     else if(kind==='usd'||kind==='num')state[k]=num(e.target.value);
+     else if(kind==='sel')state[k]=e.target.value;
+     else state[k]=e.target.value;
+     if(k==='valMethod'){renderInputs();}
+     renderResults(); save();
+   });
+ });
+ // metrics
+ document.querySelectorAll('[data-mkey]').forEach(inp=>inp.addEventListener('input',e=>{
+   const i=+e.target.dataset.mi,key=e.target.dataset.mkey;
+   if(key==='w')state.metrics[i].w=num(e.target.value)/100; else state.metrics[i].name=e.target.value;
+   renderResults();save();
+ }));
+ const am=$('#addMetric'); if(am)am.onclick=()=>{state.metrics.push({name:'New metric',w:0});state.scores.push(Array(state.nyears).fill(1));renderInputs();renderResults();save();};
+ document.querySelectorAll('[data-rmmetric]').forEach(b=>b.onclick=()=>{const i=+b.dataset.rmmetric;state.metrics.splice(i,1);state.scores.splice(i,1);renderInputs();renderResults();save();});
+ // milestones
+ document.querySelectorAll('[data-lkey]').forEach(inp=>inp.addEventListener('input',e=>{
+   const i=+e.target.dataset.li,key=e.target.dataset.lkey;
+   state.milestones[i][key]= (key==='yr'||key==='amt')? num(e.target.value): e.target.value;
+   renderResults();save();
+ }));
+ const al=$('#addMile'); if(al)al.onclick=()=>{state.milestones.push({name:'New milestone',cat:'Other',yr:0,amt:0});renderInputs();renderResults();save();};
+ document.querySelectorAll('[data-rmmile]').forEach(b=>b.onclick=()=>{const i=+b.dataset.rmmile;state.milestones.splice(i,1);renderInputs();renderResults();save();});
+ // grids
+ document.querySelectorAll('[data-gkey]').forEach(inp=>inp.addEventListener('input',e=>{state[e.target.dataset.gkey][+e.target.dataset.gi]=num(e.target.value);renderResults();save();}));
+ document.querySelectorAll('[data-skey]').forEach(inp=>inp.addEventListener('input',e=>{state.scores[+e.target.dataset.skey][+e.target.dataset.si]=num(e.target.value)/100;renderResults();save();}));
+}
+
+// ---------- config bar ----------
+function bindConfig(){
+ document.querySelectorAll('#typeSeg button').forEach(b=>b.onclick=()=>{
+   document.querySelectorAll('#typeSeg button').forEach(x=>x.classList.remove('active'));
+   b.classList.add('active'); state.type=b.dataset.type; renderInputs(); renderResults(); save();
+ });
+ $('#cname').oninput=e=>{state.cname=e.target.value;save();};
+ $('#yr1').oninput=e=>{state.yr1=num(e.target.value)||2026;renderInputs();renderResults();save();};
+ $('#nyears').oninput=e=>{state.nyears=Math.max(3,Math.min(10,num(e.target.value)||7));ensureYearArrays();renderInputs();renderResults();save();};
+ $('#bench').oninput=e=>{state.bench=num(e.target.value);renderResults();save();};
+ $('#resetBtn').onclick=()=>{if(confirm('Clear all inputs and start fresh?')){localStorage.removeItem('ae_comp');location.reload();}};
+}
+
+// ---------- persistence ----------
+function save(){try{localStorage.setItem('ae_comp',JSON.stringify(state));}catch(e){}}
+function load(){try{const j=localStorage.getItem('ae_comp');if(j){const o=JSON.parse(j);Object.assign(state,o);}}catch(e){}}
+
+// ---------- init ----------
+load(); ensureYearArrays();
+document.querySelectorAll('#typeSeg button').forEach(x=>x.classList.toggle('active',x.dataset.type===state.type));
+$('#cname').value=state.cname; $('#yr1').value=state.yr1; $('#nyears').value=state.nyears; $('#bench').value=state.bench;
+bindConfig(); renderInputs(); renderResults();
+
+</script>
+</body>
+</html>

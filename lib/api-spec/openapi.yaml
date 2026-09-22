@@ -111,6 +111,51 @@ components:
         guaranteeDurationMonths: { type: number, minimum: 0, maximum: 120 }
         severanceMonths: { type: number, minimum: 0, maximum: 60 }
         changeInControlMultiple: { type: number, minimum: 0 }
+        baseIncrease: { type: number, minimum: 0 }
+        proration: { type: number, minimum: 0, maximum: 1 }
+        stiTarget: { type: number, minimum: 0 }
+        stiMaximum: { type: number, minimum: 0 }
+        guaranteedFloor: { type: number, minimum: 0 }
+        floorFromYear: { type: integer, minimum: 1 }
+        floorToYear: { type: integer, minimum: 1 }
+        signOn: { type: number, minimum: 0 }
+        signOnYear: { type: integer, minimum: 1 }
+        relocation: { type: number, minimum: 0 }
+        relocationYear: { type: integer, minimum: 1 }
+        relocationGrossUp: { type: number, minimum: 0 }
+        housingMonthly: { type: number, minimum: 0 }
+        housingMonths: { type: number, minimum: 0 }
+        housingYear: { type: integer, minimum: 1 }
+        housingGrossUp: { type: number, minimum: 0 }
+        retentionBonus: { type: number, minimum: 0 }
+        retentionYear: { type: integer, minimum: 1 }
+        rsuAnnualGrant: { type: number, minimum: 0 }
+        rsuVestingYears: { type: number, minimum: 1 }
+        psuAnnualTarget: { type: number, minimum: 0 }
+        psuExpectedPayout: { type: number, minimum: 0 }
+        psuVestingYears: { type: number, minimum: 1 }
+        optionAnnualValue: { type: number, minimum: 0 }
+        optionVestingYears: { type: number, minimum: 1 }
+        equityStartYear: { type: integer, minimum: 1 }
+        phantomPool: { type: number, minimum: 0 }
+        phantomCoefficient: { type: number, minimum: 0 }
+        evMultiple: { type: number, minimum: 0 }
+        baselineEv: { type: number, minimum: 0 }
+        phantomVestingYears: { type: number, minimum: 1 }
+        phantomCliffYears: { type: number, minimum: 0 }
+        valuationMethod: { type: string, enum: [ebitda, manual] }
+        peOwnership: { type: number, minimum: 0 }
+        peEntryValue: { type: number, minimum: 0 }
+        peExitValue: { type: number, minimum: 0 }
+        peExitYear: { type: integer, minimum: 1 }
+        peHurdle: { type: number, minimum: 0 }
+        peRatchetOwnership: { type: number, minimum: 0 }
+        peRatchetHurdle: { type: number, minimum: 0 }
+        severanceMultiple: { type: number, minimum: 0 }
+        severanceIncludesBonus: { type: number, minimum: 0, maximum: 1 }
+        severanceEquityAcceleration: { type: number, minimum: 0 }
+        benefitsAnnual: { type: number, minimum: 0 }
+        retirementAnnual: { type: number, minimum: 0 }
         metrics:
           type: array
           items:
@@ -119,7 +164,24 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/YearlyCompensation"
-      required: [companyType, candidateRole, year, yearsToModel, marketReference, baseSalary, yearOneProRataPercent, annualIncreasePercent, targetIncentivePercent, maximumMultiple, annualEquityGrant, equityVestingYears, equityValueFactorPercent, minimumAnnualCashGuarantee, guaranteeDurationMonths, severanceMonths, changeInControlMultiple, metrics, yearlyCompensation]
+        revenue:
+          type: array
+          items: { type: number }
+        ebitda:
+          type: array
+          items: { type: number }
+        equityGrowth:
+          type: array
+          items: { type: number }
+        manualEv:
+          type: array
+          items: { type: number }
+        scores:
+          type: array
+          items:
+            type: array
+            items: { type: number }
+      required: [companyType, candidateRole, year, yearsToModel, marketReference, baseSalary, yearOneProRataPercent, annualIncreasePercent, targetIncentivePercent, maximumMultiple, annualEquityGrant, equityVestingYears, equityValueFactorPercent, minimumAnnualCashGuarantee, guaranteeDurationMonths, severanceMonths, changeInControlMultiple, baseIncrease, proration, stiTarget, stiMaximum, guaranteedFloor, floorFromYear, floorToYear, signOn, signOnYear, relocation, relocationYear, relocationGrossUp, housingMonthly, housingMonths, housingYear, housingGrossUp, retentionBonus, retentionYear, rsuAnnualGrant, rsuVestingYears, psuAnnualTarget, psuExpectedPayout, psuVestingYears, optionAnnualValue, optionVestingYears, equityStartYear, phantomPool, phantomCoefficient, evMultiple, baselineEv, phantomVestingYears, phantomCliffYears, valuationMethod, peOwnership, peEntryValue, peExitValue, peExitYear, peHurdle, peRatchetOwnership, peRatchetHurdle, severanceMultiple, severanceIncludesBonus, severanceEquityAcceleration, benefitsAnnual, retirementAnnual, metrics, revenue, ebitda, equityGrowth, manualEv, scores, yearlyCompensation]
     ScorecardMetric:
       type: object
       additionalProperties: false
@@ -139,7 +201,28 @@ components:
         equity: { type: number }
         guaranteeTopUp: { type: number }
         totalComp: { type: number }
-      required: [year, base, incentive, cash, equity, guaranteeTopUp, totalComp]
+        revenue: { type: number }
+        ebitda: { type: number }
+        enterpriseValue: { type: number }
+        evGrowth: { type: number }
+        floor: { type: number }
+        signOn: { type: number }
+        relocation: { type: number }
+        housing: { type: number }
+        retention: { type: number }
+        milestone: { type: number }
+        rsu: { type: number }
+        psu: { type: number }
+        options: { type: number }
+        phantom: { type: number }
+        peExit: { type: number }
+        benefits: { type: number }
+        retirement: { type: number }
+        longTerm: { type: number }
+        severanceCash: { type: number }
+        severanceEquity: { type: number }
+        severanceTotal: { type: number }
+      required: [year, base, incentive, cash, equity, guaranteeTopUp, totalComp, revenue, ebitda, enterpriseValue, evGrowth, floor, signOn, relocation, housing, retention, milestone, rsu, psu, options, phantom, peExit, benefits, retirement, longTerm, severanceCash, severanceEquity, severanceTotal]
     LeadInput:
       type: object
       additionalProperties: false

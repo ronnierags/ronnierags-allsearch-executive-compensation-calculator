@@ -12,5 +12,6 @@ export * from './leadInput';
 export * from './leadReceipt';
 export * from './scenarioInput';
 export * from './scenarioInputCompanyType';
+export * from './scenarioInputValuationMethod';
 export * from './scorecardMetric';
 export * from './yearlyCompensation';

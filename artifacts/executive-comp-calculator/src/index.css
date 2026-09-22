@@ -9,3 +9,16 @@
 :root { --background:42 18% 96%; --foreground:215 28% 22%; --border:215 20% 88%; --input:215 20% 88%; --ring:43 48% 53%; --card:42 33% 99%; --card-foreground:215 28% 22%; --primary:214 62% 21%; --primary-foreground:42 33% 99%; --muted:215 18% 49%; --muted-foreground:215 14% 53%; --app-font-sans:'DM Sans',sans-serif; --app-font-serif:'Libre Baskerville',serif; --radius:.45rem; }
 .dark { --background:214 45% 12%; --foreground:42 33% 96%; --card:214 40% 16%; --card-foreground:42 33% 96%; --primary:43 48% 53%; --primary-foreground:214 45% 12%; }
 @layer base { * { @apply border-border; } body { @apply font-sans antialiased bg-background text-foreground; margin:0; } button,input { font:inherit; } }
+
+/* Keep the calculator's configuration fields visibly distinct on the navy header. */
+main > div:first-child label > input {
+  background: #fffefb;
+  border: 1px solid #d8dee5;
+  border-radius: 4px;
+}
+
+main > div:first-child label > input:focus {
+  border-color: #c3a34c;
+  box-shadow: 0 0 0 1px #c3a34c;
+  outline: none;
+}

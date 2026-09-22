@@ -14,4 +14,25 @@ export interface YearlyCompensation {
   equity: number;
   guaranteeTopUp: number;
   totalComp: number;
+  revenue: number;
+  ebitda: number;
+  enterpriseValue: number;
+  evGrowth: number;
+  floor: number;
+  signOn: number;
+  relocation: number;
+  housing: number;
+  retention: number;
+  milestone: number;
+  rsu: number;
+  psu: number;
+  options: number;
+  phantom: number;
+  peExit: number;
+  benefits: number;
+  retirement: number;
+  longTerm: number;
+  severanceCash: number;
+  severanceEquity: number;
+  severanceTotal: number;
 }

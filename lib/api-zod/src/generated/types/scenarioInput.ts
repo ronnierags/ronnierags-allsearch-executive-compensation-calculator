@@ -6,6 +6,7 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { ScenarioInputCompanyType } from './scenarioInputCompanyType';
+import type { ScenarioInputValuationMethod } from './scenarioInputValuationMethod';
 import type { ScorecardMetric } from './scorecardMetric';
 import type { YearlyCompensation } from './yearlyCompensation';
 
@@ -62,6 +63,106 @@ export interface ScenarioInput {
   severanceMonths: number;
   /** @minimum 0 */
   changeInControlMultiple: number;
+  /** @minimum 0 */
+  baseIncrease: number;
+  /**
+     * @minimum 0
+     * @maximum 1
+     */
+  proration: number;
+  /** @minimum 0 */
+  stiTarget: number;
+  /** @minimum 0 */
+  stiMaximum: number;
+  /** @minimum 0 */
+  guaranteedFloor: number;
+  /** @minimum 1 */
+  floorFromYear: number;
+  /** @minimum 1 */
+  floorToYear: number;
+  /** @minimum 0 */
+  signOn: number;
+  /** @minimum 1 */
+  signOnYear: number;
+  /** @minimum 0 */
+  relocation: number;
+  /** @minimum 1 */
+  relocationYear: number;
+  /** @minimum 0 */
+  relocationGrossUp: number;
+  /** @minimum 0 */
+  housingMonthly: number;
+  /** @minimum 0 */
+  housingMonths: number;
+  /** @minimum 1 */
+  housingYear: number;
+  /** @minimum 0 */
+  housingGrossUp: number;
+  /** @minimum 0 */
+  retentionBonus: number;
+  /** @minimum 1 */
+  retentionYear: number;
+  /** @minimum 0 */
+  rsuAnnualGrant: number;
+  /** @minimum 1 */
+  rsuVestingYears: number;
+  /** @minimum 0 */
+  psuAnnualTarget: number;
+  /** @minimum 0 */
+  psuExpectedPayout: number;
+  /** @minimum 1 */
+  psuVestingYears: number;
+  /** @minimum 0 */
+  optionAnnualValue: number;
+  /** @minimum 1 */
+  optionVestingYears: number;
+  /** @minimum 1 */
+  equityStartYear: number;
+  /** @minimum 0 */
+  phantomPool: number;
+  /** @minimum 0 */
+  phantomCoefficient: number;
+  /** @minimum 0 */
+  evMultiple: number;
+  /** @minimum 0 */
+  baselineEv: number;
+  /** @minimum 1 */
+  phantomVestingYears: number;
+  /** @minimum 0 */
+  phantomCliffYears: number;
+  valuationMethod: ScenarioInputValuationMethod;
+  /** @minimum 0 */
+  peOwnership: number;
+  /** @minimum 0 */
+  peEntryValue: number;
+  /** @minimum 0 */
+  peExitValue: number;
+  /** @minimum 1 */
+  peExitYear: number;
+  /** @minimum 0 */
+  peHurdle: number;
+  /** @minimum 0 */
+  peRatchetOwnership: number;
+  /** @minimum 0 */
+  peRatchetHurdle: number;
+  /** @minimum 0 */
+  severanceMultiple: number;
+  /**
+     * @minimum 0
+     * @maximum 1
+     */
+  severanceIncludesBonus: number;
+  /** @minimum 0 */
+  severanceEquityAcceleration: number;
+  /** @minimum 0 */
+  benefitsAnnual: number;
+  /** @minimum 0 */
+  retirementAnnual: number;
   metrics: ScorecardMetric[];
   yearlyCompensation: YearlyCompensation[];
+  revenue: number[];
+  ebitda: number[];
+  equityGrowth: number[];
+  manualEv: number[];
+  scores: number[][];
 }

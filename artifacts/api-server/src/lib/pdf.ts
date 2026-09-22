@@ -1,3 +1,5 @@
+import type { ScenarioInput } from "@workspace/api-zod";
+
 function escapePdfText(value: string): string {
   return value
     .replace(/[^\x20-\x7E]/g, "-")
@@ -20,35 +22,7 @@ export function createCompensationPdf(input: {
   name: string;
   company: string;
   role: string;
-  scenario: {
-    companyType: string;
-    candidateRole: string;
-    year: number;
-    yearsToModel: number;
-    marketReference: number;
-    baseSalary: number;
-      yearOneProRataPercent: number;
-    annualIncreasePercent: number;
-    targetIncentivePercent: number;
-    maximumMultiple: number;
-      annualEquityGrant: number;
-      equityVestingYears: number;
-      equityValueFactorPercent: number;
-      minimumAnnualCashGuarantee: number;
-      guaranteeDurationMonths: number;
-      severanceMonths: number;
-      changeInControlMultiple: number;
-      metrics: Array<{ name: string; weight: number; achievement: number }>;
-    yearlyCompensation: Array<{
-      year: string;
-      base: number;
-      incentive: number;
-      cash: number;
-      equity: number;
-      guaranteeTopUp: number;
-      totalComp: number;
-    }>;
-  };
+  scenario: ScenarioInput;
 }): Buffer {
   const scenario = input.scenario;
   const yearOne = scenario.yearlyCompensation[0];
@@ -58,6 +32,22 @@ export function createCompensationPdf(input: {
     .reduce((sum, row) => sum + row.totalComp, 0);
   const finalSalary = scenario.yearlyCompensation.at(-1)?.base ?? 0;
   const contingent = Math.max(finalSalary * scenario.severanceMonths / 12, finalSalary * scenario.changeInControlMultiple);
+  const vehicleLines = scenario.companyType === "Public"
+    ? [
+        `Public equity: RSUs ${money(scenario.rsuAnnualGrant)} / ${scenario.rsuVestingYears}yr vest`,
+        `PSUs ${money(scenario.psuAnnualTarget)} at ${scenario.psuExpectedPayout}% expected payout / ${scenario.psuVestingYears}yr vest`,
+        `Options ${money(scenario.optionAnnualValue)} / ${scenario.optionVestingYears}yr vest`,
+      ]
+    : scenario.companyType === "Private"
+      ? [
+          `Private phantom equity: ${scenario.phantomPool}% pool / ${scenario.phantomVestingYears}yr vest / ${scenario.phantomCliffYears}yr cliff`,
+          `Valuation method: ${scenario.valuationMethod === "manual" ? "Manual / appraised" : "EBITDA x multiple"}; baseline EV ${money(scenario.baselineEv)}`,
+        ]
+      : [
+          `PE phantom equity: ${scenario.phantomPool}% pool / ${scenario.phantomVestingYears}yr vest / ${scenario.phantomCliffYears}yr cliff`,
+          `PE ownership ${scenario.peOwnership}% | entry ${money(scenario.peEntryValue)} | exit ${money(scenario.peExitValue)} in year ${scenario.peExitYear}`,
+          `Hurdle ${scenario.peHurdle}x; ratchet ${scenario.peRatchetOwnership}% above ${scenario.peRatchetHurdle}x`,
+        ];
   const commands: string[] = [
     "0.078 0.18 0.333 rg 0 690 612 102 re f",
     "0.765 0.639 0.298 rg 0 680 612 10 re f",
@@ -80,16 +70,19 @@ export function createCompensationPdf(input: {
     textLine(`Contingent protections: ${money(contingent)} (not earned pay)`, 58, 442, 8),
     textLine(`Market reference: ${money(scenario.marketReference)}`, 58, 477, 9),
     textLine(`Candidate / role entered: ${scenario.candidateRole || "Not specified"}`, 310, 477, 9),
-    textLine("YEAR-BY-YEAR COMPENSATION", 48, 438, 10, true),
-    "0.9 0.91 0.92 RG 48 429 m 564 429 l S",
-    textLine("Year", 55, 407, 8, true),
-    textLine("Base", 126, 407, 8, true),
-    textLine("Incentive", 230, 407, 8, true),
-    textLine("Cash", 344, 407, 8, true),
-    textLine("Equity", 450, 407, 8, true),
+    textLine("YEAR-BY-YEAR COMPENSATION", 48, 378, 10, true),
+    "0.9 0.91 0.92 RG 48 369 m 564 369 l S",
+    textLine("Year", 55, 347, 8, true),
+    textLine("Base", 126, 347, 8, true),
+    textLine("Incentive", 230, 347, 8, true),
+    textLine("Cash", 344, 347, 8, true),
+    textLine("Equity", 450, 347, 8, true),
   ];
+  vehicleLines.forEach((line, index) => {
+    commands.push(textLine(line, 58, 420 - index * 12, 7));
+  });
   scenario.yearlyCompensation.slice(0, 10).forEach((row, index) => {
-    const y = 386 - index * 19;
+    const y = 326 - index * 19;
     commands.push(
       textLine(row.year, 55, y, 8),
       textLine(money(row.base), 126, y, 8),
@@ -99,7 +92,7 @@ export function createCompensationPdf(input: {
       textLine(`Top-up ${money(row.guaranteeTopUp)} | Total ${money(row.totalComp)}`, 450, y - 10, 6),
     );
   });
-  const metricsY = Math.max(155, 370 - Math.min(10, scenario.yearlyCompensation.length) * 19);
+  const metricsY = Math.max(125, 310 - Math.min(10, scenario.yearlyCompensation.length) * 19);
   commands.push(
     textLine("INCENTIVE SCORECARD", 48, metricsY, 10, true),
     "0.9 0.91 0.92 RG 48 " + (metricsY - 9) + " m 564 " + (metricsY - 9) + " l S",

@@ -61,6 +61,84 @@ export const createLeadBodyScenarioSeveranceMonthsMax = 60;
 
 export const createLeadBodyScenarioChangeInControlMultipleMin = 0;
 
+export const createLeadBodyScenarioBaseIncreaseMin = 0;
+
+export const createLeadBodyScenarioProrationMin = 0;
+export const createLeadBodyScenarioProrationMax = 1;
+
+export const createLeadBodyScenarioStiTargetMin = 0;
+
+export const createLeadBodyScenarioStiMaximumMin = 0;
+
+export const createLeadBodyScenarioGuaranteedFloorMin = 0;
+
+
+
+export const createLeadBodyScenarioSignOnMin = 0;
+
+
+export const createLeadBodyScenarioRelocationMin = 0;
+
+
+export const createLeadBodyScenarioRelocationGrossUpMin = 0;
+
+export const createLeadBodyScenarioHousingMonthlyMin = 0;
+
+export const createLeadBodyScenarioHousingMonthsMin = 0;
+
+
+export const createLeadBodyScenarioHousingGrossUpMin = 0;
+
+export const createLeadBodyScenarioRetentionBonusMin = 0;
+
+
+export const createLeadBodyScenarioRsuAnnualGrantMin = 0;
+
+
+export const createLeadBodyScenarioPsuAnnualTargetMin = 0;
+
+export const createLeadBodyScenarioPsuExpectedPayoutMin = 0;
+
+
+export const createLeadBodyScenarioOptionAnnualValueMin = 0;
+
+
+
+export const createLeadBodyScenarioPhantomPoolMin = 0;
+
+export const createLeadBodyScenarioPhantomCoefficientMin = 0;
+
+export const createLeadBodyScenarioEvMultipleMin = 0;
+
+export const createLeadBodyScenarioBaselineEvMin = 0;
+
+
+export const createLeadBodyScenarioPhantomCliffYearsMin = 0;
+
+export const createLeadBodyScenarioPeOwnershipMin = 0;
+
+export const createLeadBodyScenarioPeEntryValueMin = 0;
+
+export const createLeadBodyScenarioPeExitValueMin = 0;
+
+
+export const createLeadBodyScenarioPeHurdleMin = 0;
+
+export const createLeadBodyScenarioPeRatchetOwnershipMin = 0;
+
+export const createLeadBodyScenarioPeRatchetHurdleMin = 0;
+
+export const createLeadBodyScenarioSeveranceMultipleMin = 0;
+
+export const createLeadBodyScenarioSeveranceIncludesBonusMin = 0;
+export const createLeadBodyScenarioSeveranceIncludesBonusMax = 1;
+
+export const createLeadBodyScenarioSeveranceEquityAccelerationMin = 0;
+
+export const createLeadBodyScenarioBenefitsAnnualMin = 0;
+
+export const createLeadBodyScenarioRetirementAnnualMin = 0;
+
 export const createLeadBodyScenarioMetricsItemAchievementMin = 0;
 export const createLeadBodyScenarioMetricsItemAchievementMax = 200;
 
@@ -90,6 +168,51 @@ export const CreateLeadBody = zod.object({
   "guaranteeDurationMonths": zod.number().min(createLeadBodyScenarioGuaranteeDurationMonthsMin).max(createLeadBodyScenarioGuaranteeDurationMonthsMax),
   "severanceMonths": zod.number().min(createLeadBodyScenarioSeveranceMonthsMin).max(createLeadBodyScenarioSeveranceMonthsMax),
   "changeInControlMultiple": zod.number().min(createLeadBodyScenarioChangeInControlMultipleMin),
+  "baseIncrease": zod.number().min(createLeadBodyScenarioBaseIncreaseMin),
+  "proration": zod.number().min(createLeadBodyScenarioProrationMin).max(createLeadBodyScenarioProrationMax),
+  "stiTarget": zod.number().min(createLeadBodyScenarioStiTargetMin),
+  "stiMaximum": zod.number().min(createLeadBodyScenarioStiMaximumMin),
+  "guaranteedFloor": zod.number().min(createLeadBodyScenarioGuaranteedFloorMin),
+  "floorFromYear": zod.number().int().min(1),
+  "floorToYear": zod.number().int().min(1),
+  "signOn": zod.number().min(createLeadBodyScenarioSignOnMin),
+  "signOnYear": zod.number().int().min(1),
+  "relocation": zod.number().min(createLeadBodyScenarioRelocationMin),
+  "relocationYear": zod.number().int().min(1),
+  "relocationGrossUp": zod.number().min(createLeadBodyScenarioRelocationGrossUpMin),
+  "housingMonthly": zod.number().min(createLeadBodyScenarioHousingMonthlyMin),
+  "housingMonths": zod.number().min(createLeadBodyScenarioHousingMonthsMin),
+  "housingYear": zod.number().int().min(1),
+  "housingGrossUp": zod.number().min(createLeadBodyScenarioHousingGrossUpMin),
+  "retentionBonus": zod.number().min(createLeadBodyScenarioRetentionBonusMin),
+  "retentionYear": zod.number().int().min(1),
+  "rsuAnnualGrant": zod.number().min(createLeadBodyScenarioRsuAnnualGrantMin),
+  "rsuVestingYears": zod.number().min(1),
+  "psuAnnualTarget": zod.number().min(createLeadBodyScenarioPsuAnnualTargetMin),
+  "psuExpectedPayout": zod.number().min(createLeadBodyScenarioPsuExpectedPayoutMin),
+  "psuVestingYears": zod.number().min(1),
+  "optionAnnualValue": zod.number().min(createLeadBodyScenarioOptionAnnualValueMin),
+  "optionVestingYears": zod.number().min(1),
+  "equityStartYear": zod.number().int().min(1),
+  "phantomPool": zod.number().min(createLeadBodyScenarioPhantomPoolMin),
+  "phantomCoefficient": zod.number().min(createLeadBodyScenarioPhantomCoefficientMin),
+  "evMultiple": zod.number().min(createLeadBodyScenarioEvMultipleMin),
+  "baselineEv": zod.number().min(createLeadBodyScenarioBaselineEvMin),
+  "phantomVestingYears": zod.number().min(1),
+  "phantomCliffYears": zod.number().min(createLeadBodyScenarioPhantomCliffYearsMin),
+  "valuationMethod": zod.enum(['ebitda', 'manual']),
+  "peOwnership": zod.number().min(createLeadBodyScenarioPeOwnershipMin),
+  "peEntryValue": zod.number().min(createLeadBodyScenarioPeEntryValueMin),
+  "peExitValue": zod.number().min(createLeadBodyScenarioPeExitValueMin),
+  "peExitYear": zod.number().int().min(1),
+  "peHurdle": zod.number().min(createLeadBodyScenarioPeHurdleMin),
+  "peRatchetOwnership": zod.number().min(createLeadBodyScenarioPeRatchetOwnershipMin),
+  "peRatchetHurdle": zod.number().min(createLeadBodyScenarioPeRatchetHurdleMin),
+  "severanceMultiple": zod.number().min(createLeadBodyScenarioSeveranceMultipleMin),
+  "severanceIncludesBonus": zod.number().min(createLeadBodyScenarioSeveranceIncludesBonusMin).max(createLeadBodyScenarioSeveranceIncludesBonusMax),
+  "severanceEquityAcceleration": zod.number().min(createLeadBodyScenarioSeveranceEquityAccelerationMin),
+  "benefitsAnnual": zod.number().min(createLeadBodyScenarioBenefitsAnnualMin),
+  "retirementAnnual": zod.number().min(createLeadBodyScenarioRetirementAnnualMin),
   "metrics": zod.array(zod.object({
   "name": zod.string(),
   "weight": zod.number(),
@@ -102,8 +225,34 @@ export const CreateLeadBody = zod.object({
   "cash": zod.number(),
   "equity": zod.number(),
   "guaranteeTopUp": zod.number(),
-  "totalComp": zod.number()
-}))
+  "totalComp": zod.number(),
+  "revenue": zod.number(),
+  "ebitda": zod.number(),
+  "enterpriseValue": zod.number(),
+  "evGrowth": zod.number(),
+  "floor": zod.number(),
+  "signOn": zod.number(),
+  "relocation": zod.number(),
+  "housing": zod.number(),
+  "retention": zod.number(),
+  "milestone": zod.number(),
+  "rsu": zod.number(),
+  "psu": zod.number(),
+  "options": zod.number(),
+  "phantom": zod.number(),
+  "peExit": zod.number(),
+  "benefits": zod.number(),
+  "retirement": zod.number(),
+  "longTerm": zod.number(),
+  "severanceCash": zod.number(),
+  "severanceEquity": zod.number(),
+  "severanceTotal": zod.number()
+})),
+  "revenue": zod.array(zod.number()),
+  "ebitda": zod.array(zod.number()),
+  "equityGrowth": zod.array(zod.number()),
+  "manualEv": zod.array(zod.number()),
+  "scores": zod.array(zod.array(zod.number()))
 })
 })
 
@@ -151,6 +300,84 @@ export const listLeadsResponseScenarioSeveranceMonthsMax = 60;
 
 export const listLeadsResponseScenarioChangeInControlMultipleMin = 0;
 
+export const listLeadsResponseScenarioBaseIncreaseMin = 0;
+
+export const listLeadsResponseScenarioProrationMin = 0;
+export const listLeadsResponseScenarioProrationMax = 1;
+
+export const listLeadsResponseScenarioStiTargetMin = 0;
+
+export const listLeadsResponseScenarioStiMaximumMin = 0;
+
+export const listLeadsResponseScenarioGuaranteedFloorMin = 0;
+
+
+
+export const listLeadsResponseScenarioSignOnMin = 0;
+
+
+export const listLeadsResponseScenarioRelocationMin = 0;
+
+
+export const listLeadsResponseScenarioRelocationGrossUpMin = 0;
+
+export const listLeadsResponseScenarioHousingMonthlyMin = 0;
+
+export const listLeadsResponseScenarioHousingMonthsMin = 0;
+
+
+export const listLeadsResponseScenarioHousingGrossUpMin = 0;
+
+export const listLeadsResponseScenarioRetentionBonusMin = 0;
+
+
+export const listLeadsResponseScenarioRsuAnnualGrantMin = 0;
+
+
+export const listLeadsResponseScenarioPsuAnnualTargetMin = 0;
+
+export const listLeadsResponseScenarioPsuExpectedPayoutMin = 0;
+
+
+export const listLeadsResponseScenarioOptionAnnualValueMin = 0;
+
+
+
+export const listLeadsResponseScenarioPhantomPoolMin = 0;
+
+export const listLeadsResponseScenarioPhantomCoefficientMin = 0;
+
+export const listLeadsResponseScenarioEvMultipleMin = 0;
+
+export const listLeadsResponseScenarioBaselineEvMin = 0;
+
+
+export const listLeadsResponseScenarioPhantomCliffYearsMin = 0;
+
+export const listLeadsResponseScenarioPeOwnershipMin = 0;
+
+export const listLeadsResponseScenarioPeEntryValueMin = 0;
+
+export const listLeadsResponseScenarioPeExitValueMin = 0;
+
+
+export const listLeadsResponseScenarioPeHurdleMin = 0;
+
+export const listLeadsResponseScenarioPeRatchetOwnershipMin = 0;
+
+export const listLeadsResponseScenarioPeRatchetHurdleMin = 0;
+
+export const listLeadsResponseScenarioSeveranceMultipleMin = 0;
+
+export const listLeadsResponseScenarioSeveranceIncludesBonusMin = 0;
+export const listLeadsResponseScenarioSeveranceIncludesBonusMax = 1;
+
+export const listLeadsResponseScenarioSeveranceEquityAccelerationMin = 0;
+
+export const listLeadsResponseScenarioBenefitsAnnualMin = 0;
+
+export const listLeadsResponseScenarioRetirementAnnualMin = 0;
+
 export const listLeadsResponseScenarioMetricsItemAchievementMin = 0;
 export const listLeadsResponseScenarioMetricsItemAchievementMax = 200;
 
@@ -181,6 +408,51 @@ export const ListLeadsResponseItem = zod.object({
   "guaranteeDurationMonths": zod.number().min(listLeadsResponseScenarioGuaranteeDurationMonthsMin).max(listLeadsResponseScenarioGuaranteeDurationMonthsMax),
   "severanceMonths": zod.number().min(listLeadsResponseScenarioSeveranceMonthsMin).max(listLeadsResponseScenarioSeveranceMonthsMax),
   "changeInControlMultiple": zod.number().min(listLeadsResponseScenarioChangeInControlMultipleMin),
+  "baseIncrease": zod.number().min(listLeadsResponseScenarioBaseIncreaseMin),
+  "proration": zod.number().min(listLeadsResponseScenarioProrationMin).max(listLeadsResponseScenarioProrationMax),
+  "stiTarget": zod.number().min(listLeadsResponseScenarioStiTargetMin),
+  "stiMaximum": zod.number().min(listLeadsResponseScenarioStiMaximumMin),
+  "guaranteedFloor": zod.number().min(listLeadsResponseScenarioGuaranteedFloorMin),
+  "floorFromYear": zod.number().int().min(1),
+  "floorToYear": zod.number().int().min(1),
+  "signOn": zod.number().min(listLeadsResponseScenarioSignOnMin),
+  "signOnYear": zod.number().int().min(1),
+  "relocation": zod.number().min(listLeadsResponseScenarioRelocationMin),
+  "relocationYear": zod.number().int().min(1),
+  "relocationGrossUp": zod.number().min(listLeadsResponseScenarioRelocationGrossUpMin),
+  "housingMonthly": zod.number().min(listLeadsResponseScenarioHousingMonthlyMin),
+  "housingMonths": zod.number().min(listLeadsResponseScenarioHousingMonthsMin),
+  "housingYear": zod.number().int().min(1),
+  "housingGrossUp": zod.number().min(listLeadsResponseScenarioHousingGrossUpMin),
+  "retentionBonus": zod.number().min(listLeadsResponseScenarioRetentionBonusMin),
+  "retentionYear": zod.number().int().min(1),
+  "rsuAnnualGrant": zod.number().min(listLeadsResponseScenarioRsuAnnualGrantMin),
+  "rsuVestingYears": zod.number().min(1),
+  "psuAnnualTarget": zod.number().min(listLeadsResponseScenarioPsuAnnualTargetMin),
+  "psuExpectedPayout": zod.number().min(listLeadsResponseScenarioPsuExpectedPayoutMin),
+  "psuVestingYears": zod.number().min(1),
+  "optionAnnualValue": zod.number().min(listLeadsResponseScenarioOptionAnnualValueMin),
+  "optionVestingYears": zod.number().min(1),
+  "equityStartYear": zod.number().int().min(1),
+  "phantomPool": zod.number().min(listLeadsResponseScenarioPhantomPoolMin),
+  "phantomCoefficient": zod.number().min(listLeadsResponseScenarioPhantomCoefficientMin),
+  "evMultiple": zod.number().min(listLeadsResponseScenarioEvMultipleMin),
+  "baselineEv": zod.number().min(listLeadsResponseScenarioBaselineEvMin),
+  "phantomVestingYears": zod.number().min(1),
+  "phantomCliffYears": zod.number().min(listLeadsResponseScenarioPhantomCliffYearsMin),
+  "valuationMethod": zod.enum(['ebitda', 'manual']),
+  "peOwnership": zod.number().min(listLeadsResponseScenarioPeOwnershipMin),
+  "peEntryValue": zod.number().min(listLeadsResponseScenarioPeEntryValueMin),
+  "peExitValue": zod.number().min(listLeadsResponseScenarioPeExitValueMin),
+  "peExitYear": zod.number().int().min(1),
+  "peHurdle": zod.number().min(listLeadsResponseScenarioPeHurdleMin),
+  "peRatchetOwnership": zod.number().min(listLeadsResponseScenarioPeRatchetOwnershipMin),
+  "peRatchetHurdle": zod.number().min(listLeadsResponseScenarioPeRatchetHurdleMin),
+  "severanceMultiple": zod.number().min(listLeadsResponseScenarioSeveranceMultipleMin),
+  "severanceIncludesBonus": zod.number().min(listLeadsResponseScenarioSeveranceIncludesBonusMin).max(listLeadsResponseScenarioSeveranceIncludesBonusMax),
+  "severanceEquityAcceleration": zod.number().min(listLeadsResponseScenarioSeveranceEquityAccelerationMin),
+  "benefitsAnnual": zod.number().min(listLeadsResponseScenarioBenefitsAnnualMin),
+  "retirementAnnual": zod.number().min(listLeadsResponseScenarioRetirementAnnualMin),
   "metrics": zod.array(zod.object({
   "name": zod.string(),
   "weight": zod.number(),
@@ -193,8 +465,34 @@ export const ListLeadsResponseItem = zod.object({
   "cash": zod.number(),
   "equity": zod.number(),
   "guaranteeTopUp": zod.number(),
-  "totalComp": zod.number()
-}))
+  "totalComp": zod.number(),
+  "revenue": zod.number(),
+  "ebitda": zod.number(),
+  "enterpriseValue": zod.number(),
+  "evGrowth": zod.number(),
+  "floor": zod.number(),
+  "signOn": zod.number(),
+  "relocation": zod.number(),
+  "housing": zod.number(),
+  "retention": zod.number(),
+  "milestone": zod.number(),
+  "rsu": zod.number(),
+  "psu": zod.number(),
+  "options": zod.number(),
+  "phantom": zod.number(),
+  "peExit": zod.number(),
+  "benefits": zod.number(),
+  "retirement": zod.number(),
+  "longTerm": zod.number(),
+  "severanceCash": zod.number(),
+  "severanceEquity": zod.number(),
+  "severanceTotal": zod.number()
+})),
+  "revenue": zod.array(zod.number()),
+  "ebitda": zod.array(zod.number()),
+  "equityGrowth": zod.array(zod.number()),
+  "manualEv": zod.array(zod.number()),
+  "scores": zod.array(zod.array(zod.number()))
 })
 })
 export const ListLeadsResponse = zod.array(ListLeadsResponseItem)
