@@ -6,14 +6,13 @@ Those routes reuse the Pages Functions handlers in `functions/`. A Worker
 project must deploy `worker.ts`; it will **not** discover Pages Functions
 automatically. The Replit Express API and PostgreSQL remain unchanged.
 
-## 1. Select one Worker project
+## 1. Configure the chosen Worker project
 
-Two existing Cloudflare Workers Builds checks are attached to this GitHub
-repository. Pick **one** Worker to host this calculator. The
-`wrangler.example.toml` name is set to
-`ronnierags-allsearch-executive-compensation-calculator`; if the other Worker
-is the intended host, change the name to that Worker's exact name. Disconnect
-the unused project's Git build trigger to avoid duplicate deployments.
+The chosen Worker is **`ronnieragusa-executivesearch-calculator`**.
+`wrangler.example.toml` uses that exact name. Another Worker,
+`ronnierags-allsearch-executive-compensation-calculator`, also builds this
+repository; disconnect its Git build trigger if it is not needed to avoid
+duplicate failed builds.
 
 Cloudflare pulls committed code from GitHub `main`, not uncommitted changes
 in Replit. In your chosen Worker project's **Settings → Build**, use:

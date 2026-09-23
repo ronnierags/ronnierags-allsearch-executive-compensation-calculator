@@ -1,6 +1,6 @@
 # Copy to wrangler.toml after creating D1 and replace the database ID.
 # Workers Builds must use artifacts/executive-comp-calculator as its root directory.
-name = "ronnierags-allsearch-executive-compensation-calculator"
+name = "ronnieragusa-executivesearch-calculator"
 main = "./worker.ts"
 compatibility_date = "2026-09-23"
 compatibility_flags = ["nodejs_compat"]
