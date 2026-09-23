@@ -10,6 +10,10 @@ const router: IRouter = Router();
 router.post("/leads", async (req, res) => {
   const parsed = CreateLeadBody.safeParse(req.body);
   if (!parsed.success) {
+    logger.warn(
+      { validation: parsed.error.flatten() },
+      "Lead request validation failed",
+    );
     res.status(400).json({ error: "Invalid lead", details: parsed.error.flatten() });
     return;
   }
@@ -43,7 +47,13 @@ router.post("/leads", async (req, res) => {
       }),
     });
     emailSent = response.ok;
-    if (!response.ok) logger.warn({ leadId: saved.id, status: response.status }, "Lead email delivery failed");
+    if (!response.ok) {
+      const providerError = await response.text();
+      logger.warn(
+        { leadId: saved.id, status: response.status, providerError },
+        "Lead email delivery failed",
+      );
+    }
   } catch (error) {
     logger.warn({ leadId: saved.id, err: error instanceof Error ? error.message : "unknown" }, "Lead email delivery failed");
   }
