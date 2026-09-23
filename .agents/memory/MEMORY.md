@@ -1,3 +1,3 @@
 - [Calculator preservation](calculator-preservation.md) — preserve the approved calculator UI and formulas when adding product capabilities.
 - [Rendered-route checks](rendered-route-checks.md) — confirm which calculator component the public route renders before claiming a UI or PDF fix.
-- [Cloudflare Pages configuration](cloudflare-pages-configuration.md) — keep dashboard bindings authoritative until real Cloudflare resource IDs are available.
+- [Cloudflare deployment configuration](cloudflare-deployment-configuration.md) — confirm project type and actual bindings before finalizing a deploy config.

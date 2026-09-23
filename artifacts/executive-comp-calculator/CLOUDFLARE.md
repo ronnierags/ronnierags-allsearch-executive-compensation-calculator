@@ -1,74 +1,79 @@
-# Cloudflare Pages deployment
+# Cloudflare Worker deployment
 
-The Pages project serves the calculator and its `/api/*` Pages Functions on the
-same origin. It does **not** use the Replit Express API or PostgreSQL. Do not
-turn off the Replit app until this deployment has been checked end to end.
+The repository contains a Cloudflare Worker entry point (`worker.ts`) that
+serves the calculator's static assets and the same-origin `/api/*` routes.
+Those routes reuse the Pages Functions handlers in `functions/`. A Worker
+project must deploy `worker.ts`; it will **not** discover Pages Functions
+automatically. The Replit Express API and PostgreSQL remain unchanged.
 
-## 1. Connect the source
+## 1. Select one Worker project
 
-In Cloudflare **Workers & Pages → Create → Pages → Connect to Git**, select
-`ronnierags/ronnierags-allsearch-executive-compensation-calculator` and the
-`main` branch. Cloudflare pulls committed code from GitHub, not unsaved Replit
-workspace changes. Commit and push changes from Replit's Git panel first.
+Two existing Cloudflare Workers Builds checks are attached to this GitHub
+repository. Pick **one** Worker to host this calculator. The
+`wrangler.example.toml` name is set to
+`ronnierags-allsearch-executive-compensation-calculator`; if the other Worker
+is the intended host, change the name to that Worker's exact name. Disconnect
+the unused project's Git build trigger to avoid duplicate deployments.
 
-Set the Pages project's **root directory** to
-`artifacts/executive-comp-calculator`. Use:
+Cloudflare pulls committed code from GitHub `main`, not uncommitted changes
+in Replit. In your chosen Worker project's **Settings → Build**, use:
 
+- Root directory: `artifacts/executive-comp-calculator`
 - Build command: `PORT=22712 BASE_PATH=/ pnpm run build`
-- Build output directory: `dist/public`
-- Environment variable `PNPM_VERSION`: `10.26.1`
-- Build-time variable `VITE_CLERK_PUBLISHABLE_KEY`: your **own production**
-  Clerk publishable key (not a Replit-managed development key)
+- Deploy command: `npx wrangler deploy`
+- Build variable `PNPM_VERSION`: `10.26.1`
+- Build variable `VITE_CLERK_PUBLISHABLE_KEY`: from **your own production**
+  Clerk instance, not Replit-managed development Clerk
 
-Keep `VITE_CLERK_PROXY_URL` unset. If an earlier deployment failed during
-dependency installation, retry with the build cache cleared. Do not disable
-the frozen lockfile check; the repository includes its updated pnpm lockfile.
+Keep `VITE_CLERK_PROXY_URL` unset. The default Workers Builds install happens
+**before** the build command. If it reports `ERR_PNPM_LOCKFILE_CONFIG_MISMATCH`,
+confirm that the failing build checked out the latest GitHub `main` commit
+and that the selected root directory is correct. Set `PNPM_VERSION` in the
+Worker's **build variables** and clear its build cache before retrying.
+A fresh clone of the committed source passes a frozen install with pnpm
+10.11.1 on Node 24, so do not remove the workspace's security overrides or
+disable frozen installs without evidence of the build-environment difference.
 
-## 2. Configure the API and database
+## 2. Create D1 and complete the Wrangler config
 
-Create a Cloudflare **D1 database** for this project. In the Pages project's
-**Settings → Bindings**, add a **D1 database** binding named exactly `DB`,
-pointing at that database. Apply `migrations/0001_leads.sql` to the database
-using its Cloudflare D1 console **before accepting real submissions**. Configure
-the same binding for Preview if you intend to test preview deployments.
+Create a Cloudflare D1 database and apply `migrations/0001_leads.sql` through
+its D1 console before accepting real submissions. Copy
+`wrangler.example.toml` to `wrangler.toml`, set `database_id` to the **real D1
+database ID** (not a secret), set `database_name` to your database name, and
+commit and push that file. Workers Builds uses it to bind D1 as `DB` and to
+upload `dist/public` as static assets with SPA routing. Do not deploy the
+example file with its placeholder ID.
 
-In the Pages project's **Settings → Variables and Secrets**, configure these
-runtime values for Production (and Preview if used):
+In the Worker project's **Settings → Variables and Secrets**, add these
+**runtime** values for the chosen Worker:
 
 | Name | Source |
 | --- | --- |
-| `CLERK_SECRET_KEY` | Secret key from **your own** production Clerk instance; store as a secret |
-| `ADMIN_EMAIL` | Email address of the Clerk user allowed to view/export leads |
+| `CLERK_SECRET_KEY` | Secret key from your own production Clerk instance; store as a secret |
+| `ADMIN_EMAIL` | Email of the Clerk user allowed to view/export leads |
 | `RESEND_API_KEY` | Resend API key; store as a secret |
-| `EMAIL_FROM` | A sender on your verified Resend domain, such as `plans@domainexecutivecompensation.download` |
+| `EMAIL_FROM` | Sender on a verified Resend domain, e.g. `plans@domainexecutivecompensation.download` |
 | `LEAD_NOTIFICATION_EMAIL` | Internal address to receive a BCC copy |
 
-Set the **Compatibility date** to `2026-09-01` or later and enable the
-`nodejs_compat` compatibility flag in **Settings → Functions** for Production
-and Preview. Redeploy after changing bindings, variables, or flags.
+The Wrangler config enables `nodejs_compat`. In your own Clerk account,
+allow the Worker's domain and eventual custom domain as application
+origins/redirect URLs. The build-time publishable key and runtime secret key
+must be from the **same production Clerk instance**. The admin API verifies a
+Clerk session token and checks the server-side `ADMIN_EMAIL`.
 
-In your own Clerk account, allow the Pages domain and eventual custom domain
-as application origins/redirect URLs. The website's Clerk publishable key and
-the Function's Clerk secret key must be from the **same production instance**.
-The `/admin` and `/sign-in` routes are part of the website. The admin API also
-verifies the Clerk session token and restricts access to `ADMIN_EMAIL` on the
-server; a signed-in non-admin cannot retrieve the lead list or CSV.
+## 3. Check before switching your domain
 
-## 3. Check before pointing a custom domain at Pages
+1. Open the Worker's public URL. `/api/healthz` should return
+   `{"status":"ok"}` and `/admin` should render the sign-in page.
+2. Submit a sample plan. A PDF should download and a row should appear in D1.
+3. Sign in as `ADMIN_EMAIL`, check `/admin` and its CSV export; verify that
+   unauthenticated requests to `/api/admin/leads` return 401.
+4. Verify your sending domain in Resend and repeat the submission to confirm
+   delivery. Without a verified domain the PDF still downloads, but email
+   is **not** sent.
+5. Only after these checks, attach the website custom domain to the chosen
+   Worker. The email sending domain is separate from the website domain.
 
-1. Open the Pages `*.pages.dev` URL and check `/api/healthz` returns
-   `{"status":"ok"}`.
-2. Submit a sample plan. The browser should download a PDF even if email
-   delivery has not yet been enabled.
-3. Check that a row appears in D1 and, after signing into your own Clerk
-   account as `ADMIN_EMAIL`, appears under `/admin`. Check the CSV export.
-4. Verify the sending domain in Resend and repeat the submission to confirm
-   email delivery. An unverified domain returns a downloaded PDF but does
-   **not** send email.
-5. Only then attach your desired website custom domain in Cloudflare Pages.
-   The email sending domain is separate from the website domain.
-
-The current Replit development and production lead tables were empty when
-this Cloudflare version was prepared. A new D1 database does not automatically
-copy any leads added to Replit later. If you start accepting leads on Replit
-before switching traffic, export and import those records before cutover.
+The Replit development and production lead tables were empty when this
+Cloudflare version was prepared. D1 does not automatically copy any leads
+added to Replit later; export/import those records before cutover if needed.
