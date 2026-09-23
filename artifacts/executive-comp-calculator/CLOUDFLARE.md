@@ -9,7 +9,7 @@ automatically. The Replit Express API and PostgreSQL remain unchanged.
 ## 1. Configure the chosen Worker project
 
 The chosen Worker is **`ronnieragusa-executivesearch-calculator`**.
-`wrangler.example.toml` uses that exact name. Another Worker,
+`wrangler.toml` uses that exact name. Another Worker,
 `ronnierags-allsearch-executive-compensation-calculator`, also builds this
 repository; disconnect its Git build trigger if it is not needed to avoid
 duplicate failed builds.
@@ -33,15 +33,15 @@ A fresh clone of the committed source passes a frozen install with pnpm
 10.11.1 on Node 24, so do not remove the workspace's security overrides or
 disable frozen installs without evidence of the build-environment difference.
 
-## 2. Create D1 and complete the Wrangler config
+## 2. Initialize D1 and configure runtime values
 
-Create a Cloudflare D1 database and apply `migrations/0001_leads.sql` through
-its D1 console before accepting real submissions. Copy
-`wrangler.example.toml` to `wrangler.toml`, set `database_id` to the **real D1
-database ID** (not a secret), set `database_name` to your database name, and
-commit and push that file. Workers Builds uses it to bind D1 as `DB` and to
-upload `dist/public` as static assets with SPA routing. Do not deploy the
-example file with its placeholder ID.
+`wrangler.toml` now binds the provided D1 database ID as `DB`. Its
+`database_name` is currently `allsearch-executive-compensation`: if you named
+the database differently, change that descriptive name to match the one
+shown in Cloudflare. Apply `migrations/0001_leads.sql` to the **remote**
+database through the Cloudflare D1 console before accepting real submissions.
+Workers Builds uses `wrangler.toml` to upload `dist/public` as static assets
+with SPA routing.
 
 In the Worker project's **Settings → Variables and Secrets**, add these
 **runtime** values for the chosen Worker:
