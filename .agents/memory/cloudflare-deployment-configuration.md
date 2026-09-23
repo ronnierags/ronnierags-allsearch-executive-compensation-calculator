@@ -14,3 +14,9 @@ Cloudflare has reported a frozen-install `overrides` mismatch even though a fres
 **Why:** Both the local workspace and a clean GitHub checkout passed with Cloudflare's reported pnpm version, so an override change in source is not established as the cause.
 
 **How to apply:** Check the build's exact commit and root directory; then pin the intended pnpm version and clear the Cloudflare build cache before attempting changes to security or platform overrides.
+
+The current GitHub connector can read this repository but a Git Data API write returned `403 Resource not accessible by integration`, while direct Git push from the workspace failed authentication. Do not assume a connected GitHub integration can publish workspace commits.
+
+**Why:** The healthy OAuth connection exposes no reauthorization scopes, so blindly reconnecting it is not an established way to obtain repository write access.
+
+**How to apply:** Before claiming Cloudflare can pull new code, verify GitHub `main` contains the latest commit. If not, the repository owner must restore a write-capable Git connection or push the commits from their own Git tooling.
