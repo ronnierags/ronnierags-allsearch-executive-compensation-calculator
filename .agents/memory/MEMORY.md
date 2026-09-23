@@ -1,1 +1,2 @@
 - [Calculator preservation](calculator-preservation.md) — preserve the approved calculator UI and formulas when adding product capabilities.
+- [Rendered-route checks](rendered-route-checks.md) — confirm which calculator component the public route renders before claiming a UI or PDF fix.
