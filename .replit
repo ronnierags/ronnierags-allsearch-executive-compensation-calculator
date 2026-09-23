@@ -23,7 +23,7 @@ timeoutMs = 20000
 
 [userenv.shared]
 ADMIN_EMAIL = "rragusa@allsearchinc.com"
-EMAIL_FROM = "plans@domainexecutivecompensation.download"
+EMAIL_FROM = "rragusa@allsearchinc.com"
 LEAD_NOTIFICATION_EMAIL = "rragusa@allsearchinc.com"
 
 [nix]
