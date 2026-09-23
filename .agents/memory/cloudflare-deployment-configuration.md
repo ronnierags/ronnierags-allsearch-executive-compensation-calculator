@@ -15,8 +15,8 @@ Cloudflare has reported a frozen-install `overrides` mismatch even though a fres
 
 **How to apply:** Check the build's exact commit and root directory; then pin the intended pnpm version and clear the Cloudflare build cache before attempting changes to security or platform overrides.
 
-The current GitHub connector can read this repository but a Git Data API write returned `403 Resource not accessible by integration`, while direct Git push from the workspace failed authentication. Do not assume a connected GitHub integration can publish workspace commits.
+GitHub connector access, shell Git credentials, and the Replit Git pane can differ. A connector read succeeded while its Git Data API write returned `403 Resource not accessible by integration`; shell Git push failed authentication even after the owner published the local branch through the Git pane.
 
-**Why:** The healthy OAuth connection exposes no reauthorization scopes, so blindly reconnecting it is not an established way to obtain repository write access.
+**Why:** A failed shell push does not prove the remote is behind. A healthy read-only connector's OAuth context exposed no reauthorization scopes, so blindly reconnecting it was not an established way to obtain write access.
 
-**How to apply:** Before claiming Cloudflare can pull new code, verify GitHub `main` contains the latest commit. If not, the repository owner must restore a write-capable Git connection or push the commits from their own Git tooling.
+**How to apply:** Verify GitHub's actual branch SHA before attempting a push or claiming Cloudflare can pull new code. If it is behind, the owner can publish through the Git pane even when shell credentials fail.
