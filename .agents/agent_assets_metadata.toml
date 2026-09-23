@@ -1,0 +1,16 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "S_BopQcQLtOv6jkorfYL9"
+uri = "file://exports/allsearch-executive-comp-calculator-source.zip"
+type = "unspecified"
+title = "AllSearch calculator source (ZIP)"
+description = "Current calculator, API, and shared source code for uploading to Claude. Excludes secrets and installed dependencies."
+logical_id = "ba86b22a-5858-4d3d-9f2c-dd7ddf95d5ed"
+content_hash = "sha256:57c2f5eb36deb696ea93f9df94fce99d4df4f870f68308e9278204c2f99f2674"
+size = 364183
+mtime_ms = 1790194387399
+storage_uri = "gcs://replit-rams-assets-reed/rams/assets/repl:cfa02cf4-c06f-46cd-877d-c70f58c8f051/ba86b22a-5858-4d3d-9f2c-dd7ddf95d5ed/9d632e6d-aeec-4576-a632-9c3def5ed2f5"
+storage_version_token = "1790194390660834"
+content_type = "application/octet-stream"
