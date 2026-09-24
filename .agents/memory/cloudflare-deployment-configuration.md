@@ -9,7 +9,7 @@ The existing Git-connected Cloudflare projects are Workers Builds, not Pages. A 
 
 **How to apply:** Confirm which of the two Git-connected Worker projects is the intended host. A production Wrangler config must use that Worker's exact name and a real D1 database ID; do not deploy a placeholder or a partial config that drops the D1 binding.
 
-Cloudflare has reported a frozen-install `overrides` mismatch even though a fresh checkout of the published Worker source completed a full offline frozen install with pnpm 10.11.1 on Node 24, from both the workspace root and calculator directory. Treat the failing build's checkout commit and effective build environment as unverified until inspected; regenerating the lockfile locally is not evidence of a fix.
+Cloudflare has reported a frozen-install `overrides` mismatch even though a fresh checkout of the published Worker source completed a full offline frozen install with pnpm 10.11.1 on Node 24, from both the workspace root and calculator directory. A non-frozen install of that checkout left its lockfile byte-for-byte unchanged. Treat the failing build's checkout commit and effective build environment as unverified until inspected; regenerating the lockfile locally is not evidence of a fix.
 
 **Why:** Both the local workspace and a clean checkout passed with Cloudflare's reported pnpm version, so an override change in source is not established as the cause.
 
