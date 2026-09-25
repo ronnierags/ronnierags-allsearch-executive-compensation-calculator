@@ -26,9 +26,16 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
             html: `<p>Hi ${lead.name.replace(/[<>&"]/g, "")},</p><p>Your compensation plan is attached.</p>`,
             attachments: [{ filename: fileName, content: base64(pdf) }],
           }),
-        });
+                });
+
+        const resendResult = await response.text();
+        console.log("RESEND STATUS:", response.status);
+        console.log("RESEND RESPONSE:", resendResult);
+
         emailSent = response.ok;
-      } catch { emailSent = false; }
+      } catch (error) {
+        console.log("RESEND ERROR:", error);
+        emailSent = false; }
     }
     await env.DB.prepare("UPDATE leads SET email_status = ? WHERE id = ?").bind(emailSent ? "sent" : "failed", id).run();
     return json(CreateLeadResponse.parse({ id, pdfBase64: base64(pdf), fileName, emailSent }), 201);
