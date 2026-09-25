@@ -26,11 +26,20 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
             html: `<p>Hi ${lead.name.replace(/[<>&"]/g, "")},</p><p>Your compensation plan is attached.</p>`,
             attachments: [{ filename: fileName, content: base64(pdf) }],
           }),
-                });
+                       });
 
         const resendResult = await response.text();
-        console.log("RESEND STATUS:", response.status);
-        console.log("RESEND RESPONSE:", resendResult);
+
+        console.log(
+          "RESEND DEBUG:",
+          JSON.stringify({
+            status: response.status,
+            ok: response.ok,
+            response: resendResult
+          })
+        );
+
+        emailSent = response.ok;
 
         emailSent = response.ok;
       } catch (error) {
